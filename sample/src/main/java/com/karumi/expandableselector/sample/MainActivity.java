@@ -18,11 +18,17 @@ package com.karumi.expandableselector.sample;
 
 import android.app.Activity;
 import android.os.Bundle;
+import com.karumi.expandableselector.ExpandableSelector;
 
 public class MainActivity extends Activity {
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_activity);
+    initializeExpandableSelector();
+  }
+
+  private void initializeExpandableSelector() {
+    ExpandableSelector expandableSelector = (ExpandableSelector) findViewById(R.id.es_colors);
   }
 }
