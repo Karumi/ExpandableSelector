@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import java.util.Collections;
 import java.util.List;
@@ -26,17 +27,24 @@ public class ExpandableSelector extends FrameLayout {
 
   public ExpandableSelector(Context context, AttributeSet attrs, int defStyleAttr) {
     this(context, attrs, defStyleAttr, 0);
+    initializeView();
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
   public ExpandableSelector(Context context, AttributeSet attrs, int defStyleAttr,
       int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
+    initializeView();
   }
 
   public void showItems(List<ExpandableItem> expandableItems) {
     validateExpandableItems(expandableItems);
     this.expandableItems = expandableItems;
+  }
+
+  private void initializeView() {
+    LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+    layoutInflater.inflate(R.layout.expandable_selector, this, true);
   }
 
   private void validateExpandableItems(List<ExpandableItem> expandableItems) {
