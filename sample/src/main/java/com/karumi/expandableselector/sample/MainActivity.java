@@ -37,6 +37,6 @@ public class MainActivity extends Activity {
     expandableItems.add(new ExpandableItem(R.drawable.item_brown));
     expandableItems.add(new ExpandableItem(R.drawable.item_brown));
     expandableItems.add(new ExpandableItem(R.drawable.item_brown));
-    expandableSelector.showItems(expandableItems);
+    expandableSelector.setExpandableItems(expandableItems);
   }
 }
