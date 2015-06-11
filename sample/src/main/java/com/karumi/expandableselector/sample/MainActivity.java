@@ -18,7 +18,10 @@ package com.karumi.expandableselector.sample;
 
 import android.app.Activity;
 import android.os.Bundle;
+import com.karumi.expandableselector.ExpandableItem;
 import com.karumi.expandableselector.ExpandableSelector;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity {
 
@@ -30,5 +33,10 @@ public class MainActivity extends Activity {
 
   private void initializeExpandableSelector() {
     ExpandableSelector expandableSelector = (ExpandableSelector) findViewById(R.id.es_colors);
+    List<ExpandableItem> expandableItems = new ArrayList<ExpandableItem>();
+    expandableItems.add(new ExpandableItem(R.drawable.item_brown));
+    expandableItems.add(new ExpandableItem(R.drawable.item_brown));
+    expandableItems.add(new ExpandableItem(R.drawable.item_brown));
+    expandableSelector.showItems(expandableItems);
   }
 }
