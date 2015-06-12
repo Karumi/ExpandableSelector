@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -51,9 +52,6 @@ public class ExpandableSelector extends FrameLayout {
   private List<ExpandableItem> expandableItems = Collections.EMPTY_LIST;
   private List<View> buttons = new LinkedList<View>();
 
-  private int itemsBackground;
-  private int itemsSize;
-  private int itemsMargin;
   private boolean hideBackgroundIfCollapsed;
   private boolean isCollapsed = true;
   private Drawable expandedBackground;
@@ -132,29 +130,8 @@ public class ExpandableSelector extends FrameLayout {
   private void initializeView(AttributeSet attrs) {
     TypedArray attributes =
         getContext().obtainStyledAttributes(attrs, R.styleable.expandable_selector);
-    initializeItemsBackground(attributes);
-    initializeItemsSize(attributes);
-    initializeItemsMargin(attributes);
     initializeHideBackgroundIfCollapsed(attributes);
     attributes.recycle();
-  }
-
-  private void initializeItemsBackground(TypedArray attributes) {
-    itemsBackground =
-        attributes.getResourceId(R.styleable.expandable_selector_expandable_item_background,
-            NO_RESOURCE_ID);
-  }
-
-  private void initializeItemsSize(TypedArray attributes) {
-    itemsSize =
-        attributes.getDimensionPixelSize(R.styleable.expandable_selector_expandable_item_size,
-            NO_SIZE);
-  }
-
-  private void initializeItemsMargin(TypedArray attributes) {
-    itemsMargin =
-        attributes.getDimensionPixelSize(R.styleable.expandable_selector_expandable_item_margin,
-            NO_MARGIN);
   }
 
   private void initializeHideBackgroundIfCollapsed(TypedArray attributes) {
@@ -190,10 +167,11 @@ public class ExpandableSelector extends FrameLayout {
     ExpandableItem expandableItem = expandableItems.get(expandableItemPosition);
     View button = null;
     Context context = getContext();
+    LayoutInflater layoutInflater = LayoutInflater.from(context);
     if (expandableItem.hasDrawableId()) {
-      button = new ImageButton(context);
+      button = layoutInflater.inflate(R.layout.expandable_item_image_button, this, false);
     } else if (expandableItem.hasTitle()) {
-      button = new Button(context);
+      button = layoutInflater.inflate(R.layout.expandable_item_button, this, false);
     }
     int visibility = expandableItemPosition == 0 ? View.VISIBLE : View.INVISIBLE;
     button.setVisibility(visibility);
@@ -211,36 +189,6 @@ public class ExpandableSelector extends FrameLayout {
       String text = expandableItem.getTitle();
       textButton.setText(text);
     }
-    if (hasItemsBackgroundConfigured()) {
-      button.setBackgroundResource(itemsBackground);
-      button.setPadding(0, 0, 0, 0);
-    }
-    LayoutParams layoutParams = ((LayoutParams) button.getLayoutParams());
-    if (hasItemsMarginConfigured()) {
-      layoutParams.leftMargin = itemsMargin;
-      layoutParams.rightMargin = itemsMargin;
-      layoutParams.topMargin = itemsMargin;
-      layoutParams.bottomMargin = itemsMargin;
-    }
-    if (hasItemsSizeConfigured()) {
-      layoutParams.width = itemsSize;
-      layoutParams.height = itemsSize;
-    } else {
-      layoutParams.width = LayoutParams.WRAP_CONTENT;
-      layoutParams.height = LayoutParams.WRAP_CONTENT;
-    }
-  }
-
-  private boolean hasItemsBackgroundConfigured() {
-    return itemsBackground != NO_RESOURCE_ID;
-  }
-
-  private boolean hasItemsSizeConfigured() {
-    return itemsSize != NO_SIZE;
-  }
-
-  private boolean hasItemsMarginConfigured() {
-    return itemsMargin != NO_MARGIN;
   }
 
   private void changeGravityToBottomCenterHorizontal(View view) {
@@ -252,7 +200,7 @@ public class ExpandableSelector extends FrameLayout {
     float y = 0;
     for (int i = numberOfButtons - 1; i > buttonPosition; i--) {
       View button = buttons.get(i);
-      y = y + button.getHeight() + itemsMargin * 2;
+      y = y + button.getHeight() + getMarginRight(button) + getMarginLeft(button);
     }
     return -y;
   }
@@ -279,9 +227,19 @@ public class ExpandableSelector extends FrameLayout {
   private int getSumHeight() {
     int sumHeight = 0;
     for (View button : buttons) {
-      sumHeight += button.getHeight() + itemsMargin * 2;
+      sumHeight += button.getHeight() + getMarginRight(button) + getMarginLeft(button);
     }
     return sumHeight;
+  }
+
+  private int getMarginRight(View view) {
+    FrameLayout.LayoutParams layoutParams = (LayoutParams) view.getLayoutParams();
+    return layoutParams.rightMargin;
+  }
+
+  private int getMarginLeft(View view) {
+    FrameLayout.LayoutParams layoutParams = (LayoutParams) view.getLayoutParams();
+    return layoutParams.leftMargin;
   }
 
   private float getFirstItemHeight() {

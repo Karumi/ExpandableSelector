@@ -29,10 +29,8 @@
       android:layout_alignParentBottom="true"
       android:layout_alignParentRight="true"
       android:background="@drawable/bg_expandable_selector"
-      android:layout_margin="10dp"
-      expandable_selector:expandable_item_background="@android:color/transparent"
-      expandable_selector:expandable_item_margin="4dp"
-      expandable_selector:hide_background_if_collapsed="true"/>
+      expandable_selector:hide_background_if_collapsed="true"
+      android:layout_margin="10dp"/>
 
   <com.karumi.expandableselector.ExpandableSelector
       android:id="@+id/es_sizes"
@@ -40,11 +38,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       android:layout_alignParentLeft="true"
-      android:background="#15000000"
-      android:layout_margin="10dp"
-      expandable_selector:expandable_item_background="@drawable/bg_item_with_title"
-      expandable_selector:expandable_item_size="40dp"
-      expandable_selector:expandable_item_margin="4dp"/>
+      android:layout_margin="10dp"/>
 
 
 </RelativeLayout>
