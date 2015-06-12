@@ -24,6 +24,7 @@ public class ExpandableSelector extends FrameLayout {
 
   private static final String Y_ANIMATION = "translationY";
   private static final int NO_RESOURCE_ID = -1;
+  private static final int NO_SIZE = -1;
   private static int NO_MARING = -1;
 
   private List<ExpandableItem> expandableItems = Collections.EMPTY_LIST;
@@ -32,6 +33,7 @@ public class ExpandableSelector extends FrameLayout {
   private float initialPosition;
 
   private int itemsBackground;
+  private int itemsSize;
   private int itemsMargin;
 
   public ExpandableSelector(Context context) {
@@ -100,6 +102,7 @@ public class ExpandableSelector extends FrameLayout {
     TypedArray attributes =
         getContext().obtainStyledAttributes(attrs, R.styleable.expandable_selector);
     initializeItemsBackground(attributes);
+    initializeItemsSize(attributes);
     initializeItemsMargin(attributes);
     attributes.recycle();
   }
@@ -108,6 +111,12 @@ public class ExpandableSelector extends FrameLayout {
     itemsBackground =
         attributes.getResourceId(R.styleable.expandable_selector_expandable_item_background,
             NO_RESOURCE_ID);
+  }
+
+  private void initializeItemsSize(TypedArray attributes) {
+    itemsSize =
+        attributes.getDimensionPixelSize(R.styleable.expandable_selector_expandable_item_size,
+            NO_SIZE);
   }
 
   private void initializeItemsMargin(TypedArray attributes) {
@@ -121,6 +130,7 @@ public class ExpandableSelector extends FrameLayout {
     for (int i = numberOfItems - 1; i >= 0; i--) {
       View button = initializeButton(i);
       addView(button);
+
       changeGravityToBottomCenterHorizontal(button);
       configureButton(button, expandableItems.get((i)));
       buttons.add(button);
@@ -162,12 +172,21 @@ public class ExpandableSelector extends FrameLayout {
       layoutParams.topMargin = itemsMargin;
       layoutParams.bottomMargin = itemsMargin;
     }
-    layoutParams.width = LayoutParams.WRAP_CONTENT;
-    layoutParams.height = LayoutParams.WRAP_CONTENT;
+    if (hasItemsSizeConfigured()) {
+      layoutParams.width = itemsSize;
+      layoutParams.height = itemsSize;
+    } else {
+      layoutParams.width = LayoutParams.WRAP_CONTENT;
+      layoutParams.height = LayoutParams.WRAP_CONTENT;
+    }
   }
 
   private boolean hasItemsBackgroundConfigured() {
     return itemsBackground != NO_RESOURCE_ID;
+  }
+
+  private boolean hasItemsSizeConfigured() {
+    return itemsSize != NO_SIZE;
   }
 
   private boolean hasItemsMarginConfigured() {

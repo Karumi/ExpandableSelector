@@ -18,6 +18,7 @@
 <resources>
   <declare-styleable name="expandable_selector">
     <attr name="expandable_item_background" format="reference"/>
+    <attr name="expandable_item_size" format="dimension"/>
     <attr name="expandable_item_margin" format="dimension"/>
   </declare-styleable>
 </resources>
