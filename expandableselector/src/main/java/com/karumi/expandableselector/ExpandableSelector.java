@@ -56,7 +56,7 @@ public class ExpandableSelector extends FrameLayout {
   public void setExpandableItems(List<ExpandableItem> expandableItems) {
     validateExpandableItems(expandableItems);
     this.expandableItems = expandableItems;
-    renderItems();
+    renderExpandableItems();
   }
 
   public void expand() {
@@ -89,10 +89,10 @@ public class ExpandableSelector extends FrameLayout {
     return true;
   }
 
-  private void renderItems() {
+  private void renderExpandableItems() {
     int numberOfItems = expandableItems.size();
     LayoutInflater inflater = LayoutInflater.from(getContext());
-    for (int i = 0; i < numberOfItems; i++) {
+    for (int i = numberOfItems - 1; i >= 0; i--) {
       ExpandableItem expandableItem = expandableItems.get(i);
       int expandable_item = expandableItem.hasDrawableId() ? R.layout.expandable_item_drawable
           : R.layout.expandable_item_title;
@@ -123,13 +123,14 @@ public class ExpandableSelector extends FrameLayout {
   }
 
   private float calculateExpandedYPosition(int buttonPosition) {
+    int numberOfButtons = buttons.size();
     float y = 0;
-    for (int i = 0; i < buttonPosition; i++) {
+    for (int i = numberOfButtons - 1; i > buttonPosition; i--) {
       View button = buttons.get(i);
-      LayoutParams layoutParams = (LayoutParams) button.getLayoutParams();
-      y -= button.getHeight() + layoutParams.topMargin + layoutParams.bottomMargin;
+      FrameLayout.LayoutParams layoutParams = (LayoutParams) buttons.get(i).getLayoutParams();
+      y = y + button.getHeight() + layoutParams.bottomMargin + layoutParams.topMargin;
     }
-    return y;
+    return -y;
   }
 
   private void resize() {
