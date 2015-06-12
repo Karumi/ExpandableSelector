@@ -110,7 +110,7 @@ public class ExpandableSelector extends FrameLayout {
   private void expandContainer() {
     float fromWidth = getWidth();
     float toWidth = fromWidth;
-    float fromHeight = getSumHeight();
+    float fromHeight = getHeight();
     float toHeight = getSumHeight();
     ResizeAnimation resizeAnimation =
         new ResizeAnimation(this, fromWidth, fromHeight, toWidth, toHeight);
@@ -120,7 +120,7 @@ public class ExpandableSelector extends FrameLayout {
   private void collapseContainer() {
     float fromWidth = getWidth();
     float toWidth = fromWidth;
-    float fromHeight = getSumHeight();
+    float fromHeight = getHeight();
     float toHeight = getFirstItemHeight();
     ResizeAnimation resizeAnimation =
         new ResizeAnimation(this, fromWidth, fromHeight, toWidth, toHeight);
@@ -245,25 +245,6 @@ public class ExpandableSelector extends FrameLayout {
       y = y + button.getHeight() + itemsMargin * 2;
     }
     return -y;
-  }
-
-  private void resize() {
-    post(new Runnable() {
-      @Override public void run() {
-        getLayoutParams().height = getSumHeight();
-        getLayoutParams().width = getMaxWidth();
-        initialPosition = buttons.get(0).getY();
-      }
-    });
-  }
-
-  private int getMaxWidth() {
-    int maxWidth = 0;
-    for (View button : buttons) {
-      int buttonWidth = button.getWidth() + itemsMargin * 2;
-      maxWidth = Math.max(maxWidth, buttonWidth);
-    }
-    return maxWidth;
   }
 
   private int getSumHeight() {

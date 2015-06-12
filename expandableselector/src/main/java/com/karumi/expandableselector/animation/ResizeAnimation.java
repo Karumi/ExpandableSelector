@@ -50,4 +50,8 @@ public class ResizeAnimation extends Animation {
     p.width = (int) width;
     view.requestLayout();
   }
+
+  @Override public boolean willChangeBounds() {
+    return true;
+  }
 }
