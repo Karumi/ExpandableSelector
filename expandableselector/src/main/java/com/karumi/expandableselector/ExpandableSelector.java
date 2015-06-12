@@ -108,22 +108,16 @@ public class ExpandableSelector extends FrameLayout {
   }
 
   private void expandContainer() {
-    float fromWidth = getWidth();
-    float toWidth = fromWidth;
-    float fromHeight = getHeight();
+    float toWidth = getWidth();
     float toHeight = getSumHeight();
-    ResizeAnimation resizeAnimation =
-        new ResizeAnimation(this, fromWidth, fromHeight, toWidth, toHeight);
+    ResizeAnimation resizeAnimation = new ResizeAnimation(this, toWidth, toHeight);
     startAnimation(resizeAnimation);
   }
 
   private void collapseContainer() {
-    float fromWidth = getWidth();
-    float toWidth = fromWidth;
-    float fromHeight = getHeight();
+    float toWidth = getWidth();
     float toHeight = getFirstItemHeight();
-    ResizeAnimation resizeAnimation =
-        new ResizeAnimation(this, fromWidth, fromHeight, toWidth, toHeight);
+    ResizeAnimation resizeAnimation = new ResizeAnimation(this, toWidth, toHeight);
     startAnimation(resizeAnimation);
   }
 

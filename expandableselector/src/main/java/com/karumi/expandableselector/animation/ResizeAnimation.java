@@ -27,27 +27,29 @@ import android.view.animation.Transformation;
  */
 public class ResizeAnimation extends Animation {
 
+  private static final long DEFAULT_DURATION_IN_MS = 250;
+
   private View view;
   private float toHeight;
   private float fromHeight;
   private float toWidth;
   private float fromWidth;
 
-  public ResizeAnimation(View view, float fromWidth, float fromHeight, float toWidth,
-      float toHeight) {
+  public ResizeAnimation(View view, float toWidth, float toHeight) {
     this.toHeight = toHeight;
     this.toWidth = toWidth;
-    this.fromHeight = fromHeight;
-    this.fromWidth = fromWidth;
+    this.fromHeight = view.getHeight();
+    this.fromWidth = view.getWidth();
     this.view = view;
+    setDuration(DEFAULT_DURATION_IN_MS);
   }
 
   @Override protected void applyTransformation(float interpolatedTime, Transformation t) {
     float height = (toHeight - fromHeight) * interpolatedTime + fromHeight;
     float width = (toWidth - fromWidth) * interpolatedTime + fromWidth;
-    ViewGroup.LayoutParams p = view.getLayoutParams();
-    p.height = (int) height;
-    p.width = (int) width;
+    ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+    layoutParams.height = (int) height;
+    layoutParams.width = (int) width;
     view.requestLayout();
   }
 
