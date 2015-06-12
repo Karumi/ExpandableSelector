@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -92,13 +93,23 @@ public class ExpandableSelector extends FrameLayout {
     LayoutInflater inflater = LayoutInflater.from(getContext());
     for (int i = 0; i < numberOfItems; i++) {
       View button = inflater.inflate(R.layout.expandable_item, this, false);
-      //TODO: Remove this.
-      button.setClickable(false);
+      configureButton(button, expandableItems.get((i)));
       addView(button);
       changeGravityToBottomCenterHorizontal(button);
       buttons.add(button);
     }
     resize();
+  }
+
+  private void configureButton(View button, ExpandableItem expandableItem) {
+    button.setClickable(false);
+    if (expandableItem.hasDrawableId()) {
+      ImageButton imageButton = (ImageButton) button;
+      int drawableId = expandableItem.getDrawableId();
+      imageButton.setImageResource(drawableId);
+    } else if (expandableItem.hasTitle()) {
+
+    }
   }
 
   private void changeGravityToBottomCenterHorizontal(View view) {
@@ -108,7 +119,9 @@ public class ExpandableSelector extends FrameLayout {
   private float calculateExpandedYPosition(int buttonPosition) {
     float y = 0;
     for (int i = 0; i < buttonPosition; i++) {
-      y -= buttons.get(i).getHeight();
+      View button = buttons.get(i);
+      LayoutParams layoutParams = (LayoutParams) button.getLayoutParams();
+      y -= button.getHeight() + layoutParams.topMargin + layoutParams.bottomMargin;
     }
     return y;
   }
@@ -126,7 +139,9 @@ public class ExpandableSelector extends FrameLayout {
   private int getMaxWidth() {
     int maxWidth = 0;
     for (View button : buttons) {
-      maxWidth = Math.max(maxWidth, button.getWidth());
+      LayoutParams layoutParams = (LayoutParams) button.getLayoutParams();
+      int buttonWidth = button.getWidth() + layoutParams.leftMargin + layoutParams.rightMargin;
+      maxWidth = Math.max(maxWidth, buttonWidth);
     }
     return maxWidth;
   }
@@ -134,7 +149,8 @@ public class ExpandableSelector extends FrameLayout {
   private int getSumHeight() {
     int sumHeight = 0;
     for (View button : buttons) {
-      sumHeight += button.getHeight();
+      LayoutParams layoutParams = (LayoutParams) button.getLayoutParams();
+      sumHeight += button.getHeight() + layoutParams.topMargin + layoutParams.bottomMargin;
     }
     return sumHeight;
   }

@@ -35,8 +35,9 @@ public class MainActivity extends Activity {
     ExpandableSelector expandableSelector = (ExpandableSelector) findViewById(R.id.es_colors);
     List<ExpandableItem> expandableItems = new ArrayList<ExpandableItem>();
     expandableItems.add(new ExpandableItem(R.drawable.item_brown));
-    expandableItems.add(new ExpandableItem(R.drawable.item_brown));
-    expandableItems.add(new ExpandableItem(R.drawable.item_brown));
+    expandableItems.add(new ExpandableItem(R.drawable.item_green));
+    expandableItems.add(new ExpandableItem(R.drawable.item_orange));
+    expandableItems.add(new ExpandableItem(R.drawable.item_pink));
     expandableSelector.setExpandableItems(expandableItems);
   }
 }

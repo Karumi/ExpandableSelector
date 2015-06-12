@@ -47,4 +47,12 @@ public class ExpandableItem {
   public String getTitle() {
     return title;
   }
+
+  public boolean hasDrawableId() {
+    return drawableId != NO_ID;
+  }
+
+  public boolean hasTitle() {
+    return title != null;
+  }
 }
