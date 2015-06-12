@@ -18,28 +18,67 @@ package com.karumi.expandableselector.sample;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 import com.karumi.expandableselector.ExpandableItem;
 import com.karumi.expandableselector.ExpandableSelector;
+import com.karumi.expandableselector.ExpandableSelectorListener;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends Activity {
+
+  private View colorsHeaderButton;
+  private ExpandableSelector colorsExpandableSelector;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_activity);
     initializeColorsExpandableSelector();
     initializeSizesExpandableSelector();
+    initializeCloseAllButton();
+  }
+
+  private void initializeCloseAllButton() {
+    final View closeButton = findViewById(R.id.bt_close);
+    closeButton.setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View v) {
+        colorsExpandableSelector.collapse();
+      }
+    });
+    colorsExpandableSelector.setExpandableSelectorListener(new ExpandableSelectorListener() {
+      @Override public void onCollapse() {
+
+      }
+
+      @Override public void onExpand() {
+
+      }
+
+      @Override public void onCollapsed() {
+        colorsHeaderButton.setVisibility(View.VISIBLE);
+      }
+
+      @Override public void onExpanded() {
+
+      }
+    });
   }
 
   private void initializeColorsExpandableSelector() {
-    ExpandableSelector expandableSelector = (ExpandableSelector) findViewById(R.id.es_colors);
+    colorsExpandableSelector = (ExpandableSelector) findViewById(R.id.es_colors);
     List<ExpandableItem> expandableItems = new ArrayList<ExpandableItem>();
     expandableItems.add(new ExpandableItem(R.drawable.item_brown));
     expandableItems.add(new ExpandableItem(R.drawable.item_green));
     expandableItems.add(new ExpandableItem(R.drawable.item_orange));
     expandableItems.add(new ExpandableItem(R.drawable.item_pink));
-    expandableSelector.setExpandableItems(expandableItems);
+    colorsExpandableSelector.setExpandableItems(expandableItems);
+    colorsHeaderButton = findViewById(R.id.bt_colors);
+    colorsHeaderButton.setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View v) {
+        colorsHeaderButton.setVisibility(View.INVISIBLE);
+        colorsExpandableSelector.expand();
+      }
+    });
   }
 
   private void initializeSizesExpandableSelector() {

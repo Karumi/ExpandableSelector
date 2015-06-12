@@ -26,7 +26,6 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
@@ -52,10 +51,10 @@ public class ExpandableSelector extends FrameLayout {
 
   private List<ExpandableItem> expandableItems = Collections.EMPTY_LIST;
   private List<View> buttons = new LinkedList<View>();
-
   private boolean hideBackgroundIfCollapsed;
   private boolean isCollapsed = true;
   private Drawable expandedBackground;
+  private ExpandableSelectorListener listener;
 
   public ExpandableSelector(Context context) {
     this(context, null);
@@ -87,10 +86,10 @@ public class ExpandableSelector extends FrameLayout {
     validateExpandableItems(expandableItems);
     this.expandableItems = expandableItems;
     renderExpandableItems();
-    bringChildsToFront(expandableItems);
+    bringChildrensToFront(expandableItems);
   }
 
-  private void bringChildsToFront(List<ExpandableItem> expandableItems) {
+  private void bringChildrensToFront(List<ExpandableItem> expandableItems) {
     int childCount = getChildCount();
     int numberOfExpandableItems = expandableItems.size();
     if (childCount > numberOfExpandableItems) {
@@ -102,6 +101,7 @@ public class ExpandableSelector extends FrameLayout {
 
   public void expand() {
     isCollapsed = false;
+    notifyExpand();
     expandContainer();
     int numberOfButtons = buttons.size();
     for (int i = 0; i < numberOfButtons; i++) {
@@ -118,6 +118,7 @@ public class ExpandableSelector extends FrameLayout {
 
   public void collapse() {
     isCollapsed = true;
+    notifyCollapse();
     collapseContainer();
     int numberOfButtons = buttons.size();
     TimeInterpolator interpolator = getCollapseAnimatorInterpolation();
@@ -132,16 +133,12 @@ public class ExpandableSelector extends FrameLayout {
     }
   }
 
-  //TODO: Replace this with click listeners
-  @Override public boolean onTouchEvent(MotionEvent event) {
-    if (event.getActionMasked() == MotionEvent.ACTION_UP) {
-      if (isCollapsed) {
-        expand();
-      } else {
-        collapse();
-      }
-    }
-    return true;
+  public boolean isCollapsed() {
+    return isCollapsed;
+  }
+
+  public void setExpandableSelectorListener(ExpandableSelectorListener listener) {
+    this.listener = listener;
   }
 
   private void initializeView(AttributeSet attrs) {
@@ -228,6 +225,11 @@ public class ExpandableSelector extends FrameLayout {
     ResizeAnimation resizeAnimation = new ResizeAnimation(this, toWidth, toHeight);
     Interpolator interpolator = getExpandAnimationInterpolator();
     resizeAnimation.setInterpolator(interpolator);
+    resizeAnimation.setAnimationListener(new AbstractAnimationListener() {
+      @Override public void onAnimationEnd(Animation animation) {
+        notifyExpanded();
+      }
+    });
     startAnimation(resizeAnimation);
   }
 
@@ -240,6 +242,7 @@ public class ExpandableSelector extends FrameLayout {
     resizeAnimation.setAnimationListener(new AbstractAnimationListener() {
       @Override public void onAnimationEnd(Animation animation) {
         updateBackground();
+        notifyCollapsed();
       }
     });
     startAnimation(resizeAnimation);
@@ -293,5 +296,33 @@ public class ExpandableSelector extends FrameLayout {
       throw new IllegalArgumentException(
           "The List<ExpandableItem> passed as argument can't be null");
     }
+  }
+
+  private void notifyExpand() {
+    if (hasListenerConfigured()) {
+      listener.onExpand();
+    }
+  }
+
+  private void notifyCollapse() {
+    if (hasListenerConfigured()) {
+      listener.onCollapse();
+    }
+  }
+
+  private void notifyExpanded() {
+    if (hasListenerConfigured()) {
+      listener.onExpanded();
+    }
+  }
+
+  private void notifyCollapsed() {
+    if (hasListenerConfigured()) {
+      listener.onCollapsed();
+    }
+  }
+
+  private boolean hasListenerConfigured() {
+    return listener != null;
   }
 }

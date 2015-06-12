@@ -22,6 +22,12 @@
     android:layout_height="match_parent"
     tools:context=".MainActivityActivity">
 
+  <ImageButton
+      android:id="@+id/bt_close"
+      android:layout_width="40dp"
+      android:layout_height="40dp"
+      android:layout_centerInParent="true"/>
+
   <com.karumi.expandableselector.ExpandableSelector
       android:id="@+id/es_colors"
       android:layout_width="wrap_content"
