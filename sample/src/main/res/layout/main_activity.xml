@@ -28,7 +28,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       android:layout_alignParentRight="true"
-      android:background="#15000000"
+      android:background="@drawable/bg_expandable_selector"
       android:layout_margin="10dp"
       expandable_selector:expandable_item_background="@android:color/transparent"
       expandable_selector:expandable_item_margin="4dp"/>
