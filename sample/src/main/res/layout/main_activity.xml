@@ -30,4 +30,14 @@
       android:background="#15000000"
       android:layout_margin="10dp"/>
 
+  <com.karumi.expandableselector.ExpandableSelector
+      android:id="@+id/es_sizes"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentLeft="true"
+      android:background="#15000000"
+      android:layout_margin="10dp"/>
+
+
 </RelativeLayout>

@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import java.util.Collections;
@@ -92,7 +93,10 @@ public class ExpandableSelector extends FrameLayout {
     int numberOfItems = expandableItems.size();
     LayoutInflater inflater = LayoutInflater.from(getContext());
     for (int i = 0; i < numberOfItems; i++) {
-      View button = inflater.inflate(R.layout.expandable_item, this, false);
+      ExpandableItem expandableItem = expandableItems.get(i);
+      int expandable_item = expandableItem.hasDrawableId() ? R.layout.expandable_item_drawable
+          : R.layout.expandable_item_title;
+      View button = inflater.inflate(expandable_item, this, false);
       configureButton(button, expandableItems.get((i)));
       addView(button);
       changeGravityToBottomCenterHorizontal(button);
@@ -108,7 +112,9 @@ public class ExpandableSelector extends FrameLayout {
       int drawableId = expandableItem.getDrawableId();
       imageButton.setImageResource(drawableId);
     } else if (expandableItem.hasTitle()) {
-
+      Button textButton = (Button) button;
+      String text = expandableItem.getTitle();
+      textButton.setText(text);
     }
   }
 

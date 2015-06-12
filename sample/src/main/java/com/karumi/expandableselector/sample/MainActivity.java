@@ -28,16 +28,27 @@ public class MainActivity extends Activity {
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_activity);
-    initializeExpandableSelector();
+    initializeColorsExpandableSelector();
+    initializeSizesExpandableSelector();
   }
 
-  private void initializeExpandableSelector() {
+  private void initializeColorsExpandableSelector() {
     ExpandableSelector expandableSelector = (ExpandableSelector) findViewById(R.id.es_colors);
     List<ExpandableItem> expandableItems = new ArrayList<ExpandableItem>();
     expandableItems.add(new ExpandableItem(R.drawable.item_brown));
     expandableItems.add(new ExpandableItem(R.drawable.item_green));
     expandableItems.add(new ExpandableItem(R.drawable.item_orange));
     expandableItems.add(new ExpandableItem(R.drawable.item_pink));
+    expandableSelector.setExpandableItems(expandableItems);
+  }
+
+  private void initializeSizesExpandableSelector() {
+    ExpandableSelector expandableSelector = (ExpandableSelector) findViewById(R.id.es_sizes);
+    List<ExpandableItem> expandableItems = new ArrayList<ExpandableItem>();
+    expandableItems.add(new ExpandableItem("XL"));
+    expandableItems.add(new ExpandableItem("L"));
+    expandableItems.add(new ExpandableItem("M"));
+    expandableItems.add(new ExpandableItem("S"));
     expandableSelector.setExpandableItems(expandableItems);
   }
 }
