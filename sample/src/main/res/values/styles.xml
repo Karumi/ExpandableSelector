@@ -23,4 +23,8 @@
     <item name="android:background">@android:color/transparent</item>
     <item name="android:layout_margin">4dp</item>
   </style>
+
+  <style name="ExpandableItemStyle.Sizes">
+    <item name="android:background">@drawable/bg_item_with_title</item>
+  </style>
 </resources>
