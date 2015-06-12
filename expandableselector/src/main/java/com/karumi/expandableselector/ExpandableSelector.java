@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import com.karumi.expandableselector.animation.ResizeAnimation;
+import com.karumi.expandableselector.animation.VisibilityAnimatorListener;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,19 +41,17 @@ import java.util.List;
 public class ExpandableSelector extends FrameLayout {
 
   private static final String Y_ANIMATION = "translationY";
-  private static final String SCALE_Y_ANIMATION = "scaleY";
   private static final int NO_RESOURCE_ID = -1;
   private static final int NO_SIZE = -1;
-  private static int NO_MARING = -1;
+  private static int NO_MARGIN = -1;
 
   private List<ExpandableItem> expandableItems = Collections.EMPTY_LIST;
   private List<View> buttons = new LinkedList<View>();
-  private boolean isCollapsed = true;
-  private float initialPosition;
 
   private int itemsBackground;
   private int itemsSize;
   private int itemsMargin;
+  private boolean isCollapsed = true;
 
   public ExpandableSelector(Context context) {
     this(context, null);
@@ -91,6 +90,7 @@ public class ExpandableSelector extends FrameLayout {
     int numberOfButtons = buttons.size();
     for (int i = 0; i < numberOfButtons; i++) {
       View button = buttons.get(i);
+      button.setVisibility(View.VISIBLE);
       float toY = calculateExpandedYPosition(i);
       ObjectAnimator.ofFloat(button, Y_ANIMATION, toY).start();
     }
@@ -102,23 +102,13 @@ public class ExpandableSelector extends FrameLayout {
     int numberOfButtons = buttons.size();
     for (int i = 0; i < numberOfButtons; i++) {
       View button = buttons.get(i);
-      ObjectAnimator.ofFloat(button, Y_ANIMATION, initialPosition).start();
+      ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(button, Y_ANIMATION, 0);
+      if (i != numberOfButtons - 1) {
+        objectAnimator.addListener(new VisibilityAnimatorListener(button, View.INVISIBLE));
+      }
+      objectAnimator.start();
     }
     isCollapsed = true;
-  }
-
-  private void expandContainer() {
-    float toWidth = getWidth();
-    float toHeight = getSumHeight();
-    ResizeAnimation resizeAnimation = new ResizeAnimation(this, toWidth, toHeight);
-    startAnimation(resizeAnimation);
-  }
-
-  private void collapseContainer() {
-    float toWidth = getWidth();
-    float toHeight = getFirstItemHeight();
-    ResizeAnimation resizeAnimation = new ResizeAnimation(this, toWidth, toHeight);
-    startAnimation(resizeAnimation);
   }
 
   //TODO: Replace this with click listeners
@@ -157,7 +147,7 @@ public class ExpandableSelector extends FrameLayout {
   private void initializeItemsMargin(TypedArray attributes) {
     itemsMargin =
         attributes.getDimensionPixelSize(R.styleable.expandable_selector_expandable_item_margin,
-            NO_MARING);
+            NO_MARGIN);
   }
 
   private void renderExpandableItems() {
@@ -165,7 +155,6 @@ public class ExpandableSelector extends FrameLayout {
     for (int i = numberOfItems - 1; i >= 0; i--) {
       View button = initializeButton(i);
       addView(button);
-
       changeGravityToBottomCenterHorizontal(button);
       configureButton(button, expandableItems.get((i)));
       buttons.add(button);
@@ -181,6 +170,8 @@ public class ExpandableSelector extends FrameLayout {
     } else if (expandableItem.hasTitle()) {
       button = new Button(context);
     }
+    int visibility = expandableItemPosition == 0 ? View.VISIBLE : View.INVISIBLE;
+    button.setVisibility(visibility);
     return button;
   }
 
@@ -224,7 +215,7 @@ public class ExpandableSelector extends FrameLayout {
   }
 
   private boolean hasItemsMarginConfigured() {
-    return itemsMargin != NO_MARING;
+    return itemsMargin != NO_MARGIN;
   }
 
   private void changeGravityToBottomCenterHorizontal(View view) {
@@ -239,6 +230,20 @@ public class ExpandableSelector extends FrameLayout {
       y = y + button.getHeight() + itemsMargin * 2;
     }
     return -y;
+  }
+
+  private void expandContainer() {
+    float toWidth = getWidth();
+    float toHeight = getSumHeight();
+    ResizeAnimation resizeAnimation = new ResizeAnimation(this, toWidth, toHeight);
+    startAnimation(resizeAnimation);
+  }
+
+  private void collapseContainer() {
+    float toWidth = getWidth();
+    float toHeight = getFirstItemHeight();
+    ResizeAnimation resizeAnimation = new ResizeAnimation(this, toWidth, toHeight);
+    startAnimation(resizeAnimation);
   }
 
   private int getSumHeight() {
