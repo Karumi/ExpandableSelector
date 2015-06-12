@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,7 +23,7 @@ import java.util.List;
 public class ExpandableSelector extends FrameLayout {
 
   private static final String Y_ANIMATION = "translationY";
-  
+
   private List<ExpandableItem> expandableItems = Collections.EMPTY_LIST;
   private List<View> buttons = new LinkedList<View>();
   private boolean isCollapsed = true;
@@ -37,12 +38,14 @@ public class ExpandableSelector extends FrameLayout {
 
   public ExpandableSelector(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    initializeView();
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
   public ExpandableSelector(Context context, AttributeSet attrs, int defStyleAttr,
       int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
+    initializeView();
   }
 
   /**
@@ -80,14 +83,48 @@ public class ExpandableSelector extends FrameLayout {
     return true;
   }
 
+  private void initializeView() {
+  }
+
   private void renderItems() {
     int numberOfItems = expandableItems.size() - 1;
     LayoutInflater inflater = LayoutInflater.from(getContext());
     for (int i = numberOfItems; i >= 0; i--) {
       View button = inflater.inflate(R.layout.expandable_item, this, false);
       addView(button);
+      changeGravityToBottomCenterHorizontall(button);
       buttons.add(button);
     }
+    resize();
+  }
+
+  private void changeGravityToBottomCenterHorizontall(View view) {
+    ((LayoutParams) view.getLayoutParams()).gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+  }
+
+  private void resize() {
+    post(new Runnable() {
+      @Override public void run() {
+        getLayoutParams().height = getSumHeight();
+        getLayoutParams().width = getMaxWidth();
+      }
+    });
+  }
+
+  private int getMaxWidth() {
+    int maxWidth = 0;
+    for (View button : buttons) {
+      maxWidth = Math.max(maxWidth, button.getWidth());
+    }
+    return maxWidth;
+  }
+
+  private int getSumHeight() {
+    int sumHeight = 0;
+    for (View button : buttons) {
+      sumHeight += button.getHeight();
+    }
+    return sumHeight;
   }
 
   private void validateExpandableItems(List<ExpandableItem> expandableItems) {
