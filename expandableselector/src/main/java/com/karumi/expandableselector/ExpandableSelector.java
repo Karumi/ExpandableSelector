@@ -17,6 +17,7 @@
 package com.karumi.expandableselector;
 
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -27,7 +28,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -95,8 +99,11 @@ public class ExpandableSelector extends FrameLayout {
     for (int i = 0; i < numberOfButtons; i++) {
       View button = buttons.get(i);
       button.setVisibility(View.VISIBLE);
+      TimeInterpolator interpolator = getExpandAnimatorInterpolation();
       float toY = calculateExpandedYPosition(i);
-      ObjectAnimator.ofFloat(button, Y_ANIMATION, toY).start();
+      ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(button, Y_ANIMATION, toY);
+      objectAnimator.setInterpolator(interpolator);
+      objectAnimator.start();
     }
     updateBackground();
   }
@@ -105,9 +112,11 @@ public class ExpandableSelector extends FrameLayout {
     isCollapsed = true;
     collapseContainer();
     int numberOfButtons = buttons.size();
+    TimeInterpolator interpolator = getCollapseAnimatorInterpolation();
     for (int i = 0; i < numberOfButtons; i++) {
       View button = buttons.get(i);
       ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(button, Y_ANIMATION, 0);
+      objectAnimator.setInterpolator(interpolator);
       if (i != numberOfButtons - 1) {
         objectAnimator.addListener(new VisibilityAnimatorListener(button, View.INVISIBLE));
       }
@@ -209,6 +218,8 @@ public class ExpandableSelector extends FrameLayout {
     float toWidth = getWidth();
     float toHeight = getSumHeight();
     ResizeAnimation resizeAnimation = new ResizeAnimation(this, toWidth, toHeight);
+    Interpolator interpolator = getExpandAnimationInterpolator();
+    resizeAnimation.setInterpolator(interpolator);
     startAnimation(resizeAnimation);
   }
 
@@ -216,12 +227,30 @@ public class ExpandableSelector extends FrameLayout {
     float toWidth = getWidth();
     float toHeight = getFirstItemHeight();
     ResizeAnimation resizeAnimation = new ResizeAnimation(this, toWidth, toHeight);
+    Interpolator interpolator = getCollapseAnimationInterpolator();
+    resizeAnimation.setInterpolator(interpolator);
     resizeAnimation.setAnimationListener(new AbstractAnimationListener() {
       @Override public void onAnimationEnd(Animation animation) {
         updateBackground();
       }
     });
     startAnimation(resizeAnimation);
+  }
+
+  private TimeInterpolator getExpandAnimatorInterpolation() {
+    return new AccelerateInterpolator();
+  }
+
+  private TimeInterpolator getCollapseAnimatorInterpolation() {
+    return new DecelerateInterpolator();
+  }
+
+  private Interpolator getExpandAnimationInterpolator() {
+    return new AccelerateInterpolator();
+  }
+
+  private Interpolator getCollapseAnimationInterpolator() {
+    return new DecelerateInterpolator();
   }
 
   private int getSumHeight() {
