@@ -31,7 +31,8 @@
       android:background="@drawable/bg_expandable_selector"
       android:layout_margin="10dp"
       expandable_selector:expandable_item_background="@android:color/transparent"
-      expandable_selector:expandable_item_margin="4dp"/>
+      expandable_selector:expandable_item_margin="4dp"
+      expandable_selector:hide_background_if_collapsed="true"/>
 
   <com.karumi.expandableselector.ExpandableSelector
       android:id="@+id/es_sizes"

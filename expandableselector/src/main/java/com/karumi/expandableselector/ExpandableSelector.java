@@ -20,14 +20,17 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import com.karumi.expandableselector.animation.AbstractAnimationListener;
 import com.karumi.expandableselector.animation.ResizeAnimation;
 import com.karumi.expandableselector.animation.VisibilityAnimatorListener;
 import java.util.Collections;
@@ -51,7 +54,9 @@ public class ExpandableSelector extends FrameLayout {
   private int itemsBackground;
   private int itemsSize;
   private int itemsMargin;
+  private boolean hideBackgroundIfCollapsed;
   private boolean isCollapsed = true;
+  private Drawable expandedBackground;
 
   public ExpandableSelector(Context context) {
     this(context, null);
@@ -86,6 +91,7 @@ public class ExpandableSelector extends FrameLayout {
   }
 
   public void expand() {
+    isCollapsed = false;
     expandContainer();
     int numberOfButtons = buttons.size();
     for (int i = 0; i < numberOfButtons; i++) {
@@ -94,10 +100,11 @@ public class ExpandableSelector extends FrameLayout {
       float toY = calculateExpandedYPosition(i);
       ObjectAnimator.ofFloat(button, Y_ANIMATION, toY).start();
     }
-    isCollapsed = false;
+    updateBackground();
   }
 
   public void collapse() {
+    isCollapsed = true;
     collapseContainer();
     int numberOfButtons = buttons.size();
     for (int i = 0; i < numberOfButtons; i++) {
@@ -108,7 +115,6 @@ public class ExpandableSelector extends FrameLayout {
       }
       objectAnimator.start();
     }
-    isCollapsed = true;
   }
 
   //TODO: Replace this with click listeners
@@ -129,6 +135,7 @@ public class ExpandableSelector extends FrameLayout {
     initializeItemsBackground(attributes);
     initializeItemsSize(attributes);
     initializeItemsMargin(attributes);
+    initializeHideBackgroundIfCollapsed(attributes);
     attributes.recycle();
   }
 
@@ -148,6 +155,24 @@ public class ExpandableSelector extends FrameLayout {
     itemsMargin =
         attributes.getDimensionPixelSize(R.styleable.expandable_selector_expandable_item_margin,
             NO_MARGIN);
+  }
+
+  private void initializeHideBackgroundIfCollapsed(TypedArray attributes) {
+    hideBackgroundIfCollapsed =
+        attributes.getBoolean(R.styleable.expandable_selector_hide_background_if_collapsed, false);
+    expandedBackground = getBackground();
+    updateBackground();
+  }
+
+  private void updateBackground() {
+    if (!hideBackgroundIfCollapsed) {
+      return;
+    }
+    if (!isCollapsed) {
+      setBackgroundDrawable(expandedBackground);
+    } else {
+      setBackgroundResource(android.R.color.transparent);
+    }
   }
 
   private void renderExpandableItems() {
@@ -243,6 +268,11 @@ public class ExpandableSelector extends FrameLayout {
     float toWidth = getWidth();
     float toHeight = getFirstItemHeight();
     ResizeAnimation resizeAnimation = new ResizeAnimation(this, toWidth, toHeight);
+    resizeAnimation.setAnimationListener(new AbstractAnimationListener() {
+      @Override public void onAnimationEnd(Animation animation) {
+        updateBackground();
+      }
+    });
     startAnimation(resizeAnimation);
   }
 
