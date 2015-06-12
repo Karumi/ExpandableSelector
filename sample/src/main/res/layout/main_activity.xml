@@ -30,7 +30,14 @@
       android:layout_alignParentRight="true"
       android:background="@drawable/bg_expandable_selector"
       expandable_selector:hide_background_if_collapsed="true"
-      android:layout_margin="10dp"/>
+      android:layout_margin="10dp">
+
+    <Button
+        android:id="@+id/bt_colors"
+        android:text="COLOR"
+        style="@style/ExpandableItemStyleHeader"/>
+
+  </com.karumi.expandableselector.ExpandableSelector>
 
   <com.karumi.expandableselector.ExpandableSelector
       android:id="@+id/es_sizes"

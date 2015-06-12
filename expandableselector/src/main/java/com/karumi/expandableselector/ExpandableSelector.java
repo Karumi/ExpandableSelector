@@ -49,9 +49,6 @@ import java.util.List;
 public class ExpandableSelector extends FrameLayout {
 
   private static final String Y_ANIMATION = "translationY";
-  private static final int NO_RESOURCE_ID = -1;
-  private static final int NO_SIZE = -1;
-  private static int NO_MARGIN = -1;
 
   private List<ExpandableItem> expandableItems = Collections.EMPTY_LIST;
   private List<View> buttons = new LinkedList<View>();
@@ -90,6 +87,17 @@ public class ExpandableSelector extends FrameLayout {
     validateExpandableItems(expandableItems);
     this.expandableItems = expandableItems;
     renderExpandableItems();
+    bringChildsToFront(expandableItems);
+  }
+
+  private void bringChildsToFront(List<ExpandableItem> expandableItems) {
+    int childCount = getChildCount();
+    int numberOfExpandableItems = expandableItems.size();
+    if (childCount > numberOfExpandableItems) {
+      for (int i = 0; i < childCount - numberOfExpandableItems; i++) {
+        getChildAt(i).bringToFront();
+      }
+    }
   }
 
   public void expand() {
