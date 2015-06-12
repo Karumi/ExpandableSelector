@@ -9,8 +9,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -27,6 +25,7 @@ public class ExpandableSelector extends FrameLayout {
   private List<ExpandableItem> expandableItems = Collections.EMPTY_LIST;
   private List<View> buttons = new LinkedList<View>();
   private boolean isCollapsed = true;
+  private float initialPosition;
 
   public ExpandableSelector(Context context) {
     this(context, null);
@@ -38,14 +37,12 @@ public class ExpandableSelector extends FrameLayout {
 
   public ExpandableSelector(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
-    initializeView();
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
   public ExpandableSelector(Context context, AttributeSet attrs, int defStyleAttr,
       int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
-    initializeView();
   }
 
   /**
@@ -61,15 +58,22 @@ public class ExpandableSelector extends FrameLayout {
   }
 
   public void expand() {
-    int itemPosition = 0;
-    View button = buttons.get(0);
-    ObjectAnimator.ofFloat(button, Y_ANIMATION, -100).start();
+    int numberOfButtons = buttons.size();
+    for (int i = 0; i < numberOfButtons; i++) {
+      View button = buttons.get(i);
+      float toY = calculateExpandedYPosition(i);
+      ObjectAnimator.ofFloat(button, Y_ANIMATION, toY).start();
+    }
+    isCollapsed = false;
   }
 
   public void collapse() {
-    int itemPosition = 0;
-    Animation animation = new TranslateAnimation(0, 0, 0, 100);
-    buttons.get(0).startAnimation(animation);
+    int numberOfButtons = buttons.size();
+    for (int i = 0; i < numberOfButtons; i++) {
+      View button = buttons.get(i);
+      ObjectAnimator.ofFloat(button, Y_ANIMATION, initialPosition).start();
+    }
+    isCollapsed = true;
   }
 
   @Override public boolean onTouchEvent(MotionEvent event) {
@@ -83,23 +87,30 @@ public class ExpandableSelector extends FrameLayout {
     return true;
   }
 
-  private void initializeView() {
-  }
-
   private void renderItems() {
-    int numberOfItems = expandableItems.size() - 1;
+    int numberOfItems = expandableItems.size();
     LayoutInflater inflater = LayoutInflater.from(getContext());
-    for (int i = numberOfItems; i >= 0; i--) {
+    for (int i = 0; i < numberOfItems; i++) {
       View button = inflater.inflate(R.layout.expandable_item, this, false);
+      //TODO: Remove this.
+      button.setClickable(false);
       addView(button);
-      changeGravityToBottomCenterHorizontall(button);
+      changeGravityToBottomCenterHorizontal(button);
       buttons.add(button);
     }
     resize();
   }
 
-  private void changeGravityToBottomCenterHorizontall(View view) {
+  private void changeGravityToBottomCenterHorizontal(View view) {
     ((LayoutParams) view.getLayoutParams()).gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+  }
+
+  private float calculateExpandedYPosition(int buttonPosition) {
+    float y = 0;
+    for (int i = 0; i < buttonPosition; i++) {
+      y -= buttons.get(i).getHeight();
+    }
+    return y;
   }
 
   private void resize() {
@@ -107,6 +118,7 @@ public class ExpandableSelector extends FrameLayout {
       @Override public void run() {
         getLayoutParams().height = getSumHeight();
         getLayoutParams().width = getMaxWidth();
+        initialPosition = buttons.get(0).getY();
       }
     });
   }
