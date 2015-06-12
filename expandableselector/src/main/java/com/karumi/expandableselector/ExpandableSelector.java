@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2015 Karumi.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.karumi.expandableselector;
 
 import android.animation.ObjectAnimator;
@@ -12,6 +28,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import com.karumi.expandableselector.animation.ResizeAnimation;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +40,7 @@ import java.util.List;
 public class ExpandableSelector extends FrameLayout {
 
   private static final String Y_ANIMATION = "translationY";
+  private static final String SCALE_Y_ANIMATION = "scaleY";
   private static final int NO_RESOURCE_ID = -1;
   private static final int NO_SIZE = -1;
   private static int NO_MARING = -1;
@@ -69,6 +87,7 @@ public class ExpandableSelector extends FrameLayout {
   }
 
   public void expand() {
+    expandContainer();
     int numberOfButtons = buttons.size();
     for (int i = 0; i < numberOfButtons; i++) {
       View button = buttons.get(i);
@@ -79,6 +98,7 @@ public class ExpandableSelector extends FrameLayout {
   }
 
   public void collapse() {
+    collapseContainer();
     int numberOfButtons = buttons.size();
     for (int i = 0; i < numberOfButtons; i++) {
       View button = buttons.get(i);
@@ -87,6 +107,27 @@ public class ExpandableSelector extends FrameLayout {
     isCollapsed = true;
   }
 
+  private void expandContainer() {
+    float fromWidth = getWidth();
+    float toWidth = fromWidth;
+    float fromHeight = getSumHeight();
+    float toHeight = getSumHeight();
+    ResizeAnimation resizeAnimation =
+        new ResizeAnimation(this, fromWidth, fromHeight, toWidth, toHeight);
+    startAnimation(resizeAnimation);
+  }
+
+  private void collapseContainer() {
+    float fromWidth = getWidth();
+    float toWidth = fromWidth;
+    float fromHeight = getSumHeight();
+    float toHeight = getFirstItemHeight();
+    ResizeAnimation resizeAnimation =
+        new ResizeAnimation(this, fromWidth, fromHeight, toWidth, toHeight);
+    startAnimation(resizeAnimation);
+  }
+
+  //TODO: Replace this with click listeners
   @Override public boolean onTouchEvent(MotionEvent event) {
     if (event.getActionMasked() == MotionEvent.ACTION_UP) {
       if (isCollapsed) {
@@ -135,7 +176,6 @@ public class ExpandableSelector extends FrameLayout {
       configureButton(button, expandableItems.get((i)));
       buttons.add(button);
     }
-    resize();
   }
 
   private View initializeButton(int expandableItemPosition) {
@@ -232,6 +272,15 @@ public class ExpandableSelector extends FrameLayout {
       sumHeight += button.getHeight() + itemsMargin * 2;
     }
     return sumHeight;
+  }
+
+  private float getFirstItemHeight() {
+    View firstButton = buttons.get(0);
+    int height = firstButton.getHeight();
+    FrameLayout.LayoutParams layoutParams = (LayoutParams) firstButton.getLayoutParams();
+    int topMargin = layoutParams.topMargin;
+    int bottomMargin = layoutParams.bottomMargin;
+    return height + topMargin + bottomMargin;
   }
 
   private void validateExpandableItems(List<ExpandableItem> expandableItems) {
