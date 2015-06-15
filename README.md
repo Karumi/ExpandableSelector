@@ -162,7 +162,3 @@ License
 
 
 [1]: ./art/screenshot_demo_1.gif
-[2]: https://github.com/robolectric/robolectric
-[3]: https://github.com/junit-team/junit
-[4]: https://github.com/square/picasso
-[5]: https://github.com/pedrovgs/Nox
