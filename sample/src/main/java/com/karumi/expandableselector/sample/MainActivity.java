@@ -91,17 +91,18 @@ public class MainActivity extends Activity {
       @Override public void onExpandableItemClickListener(int index, View view) {
         switch (index) {
           case 0:
-            showToast("Brown button clicked");
+            colorsHeaderButton.setBackgroundResource(R.drawable.item_brown);
             break;
           case 1:
-            showToast("Green button clicked");
+            colorsHeaderButton.setBackgroundResource(R.drawable.item_green);
             break;
           case 2:
-            showToast("Oragne button clicked");
+            colorsHeaderButton.setBackgroundResource(R.drawable.item_orange);
             break;
           default:
-            showToast("Pink button clicked");
+            colorsHeaderButton.setBackgroundResource(R.drawable.item_pink);
         }
+        colorsExpandableSelector.collapse();
       }
     });
   }
