@@ -16,27 +16,18 @@
 
 package com.karumi.expandableselector;
 
-import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import com.karumi.expandableselector.animation.AbstractAnimationListener;
-import com.karumi.expandableselector.animation.ResizeAnimation;
-import com.karumi.expandableselector.animation.VisibilityAnimatorListener;
+import com.karumi.expandableselector.animation.ExpandableSelectorAnimator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,17 +38,13 @@ import java.util.List;
  */
 public class ExpandableSelector extends FrameLayout {
 
-  private static final String Y_ANIMATION = "translationY";
   private static final int DEFAULT_ANIMATION_DURATION = 300;
-  private static final float CONTAINER_ANIMATION_OFFSET = 1.16f;
 
   private List<ExpandableItem> expandableItems = Collections.EMPTY_LIST;
   private List<View> buttons = new ArrayList<View>();
+  private ExpandableSelectorAnimator expandableSelectorAnimator;
 
   private boolean hideBackgroundIfCollapsed;
-  private int animationDuration;
-
-  private boolean isCollapsed = true;
   private Drawable expandedBackground;
 
   private ExpandableSelectorListener listener;
@@ -92,50 +79,34 @@ public class ExpandableSelector extends FrameLayout {
   public void showExpandableItems(List<ExpandableItem> expandableItems) {
     validateExpandableItems(expandableItems);
     reset();
-    this.expandableItems = new ArrayList<ExpandableItem>(expandableItems);
+    setExpandableItems(expandableItems);
     renderExpandableItems();
     hookListeners();
-    bringChildrensToFront(expandableItems);
+    bringChildsToFront(expandableItems);
   }
 
   public void expand() {
-    isCollapsed = false;
+    expandableSelectorAnimator.expand(new ExpandableSelectorAnimator.Listener() {
+      @Override public void onAnimationFinished() {
+        notifyExpanded();
+      }
+    });
     notifyExpand();
-    expandContainer();
-    int numberOfButtons = buttons.size();
-    for (int i = 0; i < numberOfButtons; i++) {
-      View button = buttons.get(i);
-      button.setVisibility(View.VISIBLE);
-      TimeInterpolator interpolator = getExpandAnimatorInterpolation();
-      float toY = calculateExpandedYPosition(i);
-      ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(button, Y_ANIMATION, toY);
-      objectAnimator.setInterpolator(interpolator);
-      objectAnimator.setDuration(animationDuration);
-      objectAnimator.start();
-    }
     updateBackground();
   }
 
   public void collapse() {
-    isCollapsed = true;
-    notifyCollapse();
-    collapseContainer();
-    int numberOfButtons = buttons.size();
-    TimeInterpolator interpolator = getCollapseAnimatorInterpolation();
-    for (int i = 0; i < numberOfButtons; i++) {
-      View button = buttons.get(i);
-      ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(button, Y_ANIMATION, 0);
-      objectAnimator.setInterpolator(interpolator);
-      if (i != numberOfButtons - 1) {
-        objectAnimator.addListener(new VisibilityAnimatorListener(button, View.INVISIBLE));
+    expandableSelectorAnimator.collapse(new ExpandableSelectorAnimator.Listener() {
+      @Override public void onAnimationFinished() {
+        updateBackground();
+        notifyCollapsed();
       }
-      objectAnimator.setDuration(animationDuration);
-      objectAnimator.start();
-    }
+    });
+    notifyCollapse();
   }
 
   public boolean isCollapsed() {
-    return isCollapsed;
+    return expandableSelectorAnimator == null || expandableSelectorAnimator.isCollapsed();
   }
 
   public boolean isExpanded() {
@@ -155,7 +126,7 @@ public class ExpandableSelector extends FrameLayout {
     expandableItems.remove(expandableItemPosition);
     expandableItems.add(expandableItemPosition, expandableItem);
     int buttonPosition = buttons.size() - 1 - expandableItemPosition;
-    configureButton(buttons.get(buttonPosition), expandableItem);
+    configureButtonContent(buttons.get(buttonPosition), expandableItem);
   }
 
   private void initializeView(AttributeSet attrs) {
@@ -172,6 +143,7 @@ public class ExpandableSelector extends FrameLayout {
       removeView(button);
     }
     this.buttons = new ArrayList<View>();
+    expandableSelectorAnimator.setButtons(buttons);
   }
 
   private void initializeHideBackgroundIfCollapsed(TypedArray attributes) {
@@ -182,15 +154,17 @@ public class ExpandableSelector extends FrameLayout {
   }
 
   private void initializeAnimationDuration(TypedArray attributes) {
-    animationDuration = attributes.getInteger(R.styleable.expandable_selector_animation_duration,
-        DEFAULT_ANIMATION_DURATION);
+    int animationDuration =
+        attributes.getInteger(R.styleable.expandable_selector_animation_duration,
+            DEFAULT_ANIMATION_DURATION);
+    expandableSelectorAnimator = new ExpandableSelectorAnimator(this, animationDuration);
   }
 
   private void updateBackground() {
     if (!hideBackgroundIfCollapsed) {
       return;
     }
-    if (!isCollapsed) {
+    if (isExpanded()) {
       setBackgroundDrawable(expandedBackground);
     } else {
       setBackgroundResource(android.R.color.transparent);
@@ -202,10 +176,11 @@ public class ExpandableSelector extends FrameLayout {
     for (int i = numberOfItems - 1; i >= 0; i--) {
       View button = initializeButton(i);
       addView(button);
-      changeGravityToBottomCenterHorizontal(button);
-      configureButton(button, expandableItems.get((i)));
       buttons.add(button);
+      expandableSelectorAnimator.initializeButton(button);
+      configureButtonContent(button, expandableItems.get((i)));
     }
+    expandableSelectorAnimator.setButtons(buttons);
   }
 
   private void hookListeners() {
@@ -253,7 +228,7 @@ public class ExpandableSelector extends FrameLayout {
     return button;
   }
 
-  private void configureButton(View button, ExpandableItem expandableItem) {
+  private void configureButtonContent(View button, ExpandableItem expandableItem) {
     if (expandableItem.hasBackgroundId()) {
       int backgroundId = expandableItem.getBackgroundId();
       button.setBackgroundResource(backgroundId);
@@ -267,100 +242,6 @@ public class ExpandableSelector extends FrameLayout {
       int resourceId = expandableItem.getResourceId();
       imageButton.setImageResource(resourceId);
     }
-  }
-
-  private void changeGravityToBottomCenterHorizontal(View view) {
-    ((LayoutParams) view.getLayoutParams()).gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-  }
-
-  private float calculateExpandedYPosition(int buttonPosition) {
-    int numberOfButtons = buttons.size();
-    float y = 0;
-    for (int i = numberOfButtons - 1; i > buttonPosition; i--) {
-      View button = buttons.get(i);
-      y = y + button.getHeight() + getMarginRight(button) + getMarginLeft(button);
-    }
-    return -y;
-  }
-
-  private void expandContainer() {
-    float toWidth = getWidth();
-    float toHeight = getSumHeight();
-    ResizeAnimation resizeAnimation = new ResizeAnimation(this, toWidth, toHeight);
-    Interpolator interpolator = getContainerAnimationInterpolator();
-    resizeAnimation.setInterpolator(interpolator);
-    resizeAnimation.setDuration((long) (animationDuration * CONTAINER_ANIMATION_OFFSET));
-    resizeAnimation.setAnimationListener(new AbstractAnimationListener() {
-      @Override public void onAnimationEnd(Animation animation) {
-        notifyExpanded();
-      }
-    });
-    startAnimation(resizeAnimation);
-  }
-
-  private void collapseContainer() {
-    float toWidth = getWidth();
-    float toHeight = getFirstItemHeight();
-    ResizeAnimation resizeAnimation = new ResizeAnimation(this, toWidth, toHeight);
-    Interpolator interpolator = getContainerAnimationInterpolator();
-    resizeAnimation.setInterpolator(interpolator);
-    resizeAnimation.setDuration((long) (animationDuration * CONTAINER_ANIMATION_OFFSET));
-    resizeAnimation.setAnimationListener(new AbstractAnimationListener() {
-      @Override public void onAnimationEnd(Animation animation) {
-        updateBackground();
-        notifyCollapsed();
-      }
-    });
-    startAnimation(resizeAnimation);
-  }
-
-  private void bringChildrensToFront(List<ExpandableItem> expandableItems) {
-    int childCount = getChildCount();
-    int numberOfExpandableItems = expandableItems.size();
-    if (childCount > numberOfExpandableItems) {
-      for (int i = 0; i < childCount - numberOfExpandableItems; i++) {
-        getChildAt(i).bringToFront();
-      }
-    }
-  }
-
-  private TimeInterpolator getExpandAnimatorInterpolation() {
-    return new AccelerateInterpolator();
-  }
-
-  private TimeInterpolator getCollapseAnimatorInterpolation() {
-    return new DecelerateInterpolator();
-  }
-
-  private Interpolator getContainerAnimationInterpolator() {
-    return new DecelerateInterpolator();
-  }
-
-  private int getSumHeight() {
-    int sumHeight = 0;
-    for (View button : buttons) {
-      sumHeight += button.getHeight() + getMarginRight(button) + getMarginLeft(button);
-    }
-    return sumHeight;
-  }
-
-  private int getMarginRight(View view) {
-    FrameLayout.LayoutParams layoutParams = (LayoutParams) view.getLayoutParams();
-    return layoutParams.rightMargin;
-  }
-
-  private int getMarginLeft(View view) {
-    FrameLayout.LayoutParams layoutParams = (LayoutParams) view.getLayoutParams();
-    return layoutParams.leftMargin;
-  }
-
-  private float getFirstItemHeight() {
-    View firstButton = buttons.get(0);
-    int height = firstButton.getHeight();
-    FrameLayout.LayoutParams layoutParams = (LayoutParams) firstButton.getLayoutParams();
-    int topMargin = layoutParams.topMargin;
-    int bottomMargin = layoutParams.bottomMargin;
-    return height + topMargin + bottomMargin;
   }
 
   private void notifyExpand() {
@@ -402,6 +283,20 @@ public class ExpandableSelector extends FrameLayout {
     if (expandableItems == null) {
       throw new IllegalArgumentException(
           "The List<ExpandableItem> passed as argument can't be null");
+    }
+  }
+
+  private void setExpandableItems(List<ExpandableItem> expandableItems) {
+    this.expandableItems = new ArrayList<ExpandableItem>(expandableItems);
+  }
+
+  private void bringChildsToFront(List<ExpandableItem> expandableItems) {
+    int childCount = getChildCount();
+    int numberOfExpandableItems = expandableItems.size();
+    if (childCount > numberOfExpandableItems) {
+      for (int i = 0; i < childCount - numberOfExpandableItems; i++) {
+        getChildAt(i).bringToFront();
+      }
     }
   }
 }
