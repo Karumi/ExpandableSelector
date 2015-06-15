@@ -24,24 +24,24 @@ public class ExpandableItem {
 
   private static final int NO_ID = -1;
 
-  private final int drawableId;
+  private final int backgroundId;
   private final String title;
 
-  public ExpandableItem(int drawableId) {
-    this(drawableId, null);
+  public ExpandableItem(int backgroundId) {
+    this(backgroundId, null);
   }
 
   public ExpandableItem(String title) {
     this(NO_ID, title);
   }
 
-  private ExpandableItem(int drawableId, String title) {
-    this.drawableId = drawableId;
+  private ExpandableItem(int backgroundId, String title) {
+    this.backgroundId = backgroundId;
     this.title = title;
   }
 
-  public int getDrawableId() {
-    return drawableId;
+  public int getBackgroundId() {
+    return backgroundId;
   }
 
   public String getTitle() {
@@ -49,7 +49,7 @@ public class ExpandableItem {
   }
 
   public boolean hasDrawableId() {
-    return drawableId != NO_ID;
+    return backgroundId != NO_ID;
   }
 
   public boolean hasTitle() {

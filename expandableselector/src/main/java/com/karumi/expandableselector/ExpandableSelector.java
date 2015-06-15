@@ -222,8 +222,8 @@ public class ExpandableSelector extends FrameLayout {
   private void configureButton(View button, ExpandableItem expandableItem) {
     if (expandableItem.hasDrawableId()) {
       ImageButton imageButton = (ImageButton) button;
-      int drawableId = expandableItem.getDrawableId();
-      imageButton.setImageResource(drawableId);
+      int drawableId = expandableItem.getBackgroundId();
+      imageButton.setBackgroundResource(drawableId);
     } else if (expandableItem.hasTitle()) {
       Button textButton = (Button) button;
       String text = expandableItem.getTitle();

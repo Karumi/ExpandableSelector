@@ -15,15 +15,16 @@
   ~ limitations under the License.
   -->
 
-<shape
+<ripple
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-
-  <solid
-      android:color="#FF4B2D29"/>
-
-  <size
-      android:width="40dp"
-      android:height="40dp"/>
-</shape>
+    android:color="?android:colorControlHighlight">
+  <item>
+    <shape android:shape="oval">
+      <solid android:color="#FFFFFFFF"/>
+      <size
+          android:width="40dp"
+          android:height="40dp"/>
+    </shape>
+  </item>
+</ripple>
 
