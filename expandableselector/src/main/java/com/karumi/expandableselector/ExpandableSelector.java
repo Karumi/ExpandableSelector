@@ -37,8 +37,8 @@ import android.widget.ImageButton;
 import com.karumi.expandableselector.animation.AbstractAnimationListener;
 import com.karumi.expandableselector.animation.ResizeAnimation;
 import com.karumi.expandableselector.animation.VisibilityAnimatorListener;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -50,7 +50,7 @@ public class ExpandableSelector extends FrameLayout {
   private static final String Y_ANIMATION = "translationY";
 
   private List<ExpandableItem> expandableItems = Collections.EMPTY_LIST;
-  private List<View> buttons = new LinkedList<View>();
+  private List<View> buttons = new ArrayList<View>();
   private boolean hideBackgroundIfCollapsed;
   private boolean isCollapsed = true;
   private Drawable expandedBackground;
@@ -86,7 +86,8 @@ public class ExpandableSelector extends FrameLayout {
    */
   public void showExpandableItems(List<ExpandableItem> expandableItems) {
     validateExpandableItems(expandableItems);
-    this.expandableItems = expandableItems;
+    reset();
+    this.expandableItems = new ArrayList<ExpandableItem>(expandableItems);
     renderExpandableItems();
     hookListeners();
     bringChildrensToFront(expandableItems);
@@ -155,6 +156,14 @@ public class ExpandableSelector extends FrameLayout {
         getContext().obtainStyledAttributes(attrs, R.styleable.expandable_selector);
     initializeHideBackgroundIfCollapsed(attributes);
     attributes.recycle();
+  }
+
+  private void reset() {
+    this.expandableItems = Collections.EMPTY_LIST;
+    for (View button : buttons) {
+      removeView(button);
+    }
+    this.buttons = new ArrayList<View>();
   }
 
   private void initializeHideBackgroundIfCollapsed(TypedArray attributes) {
