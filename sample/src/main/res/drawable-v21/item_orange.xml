@@ -20,7 +20,7 @@
     android:color="?android:colorControlHighlight">
   <item>
     <shape android:shape="oval">
-      <solid android:color="#FFE29B33"/>
+      <solid android:color="@color/orange"/>
       <size
           android:width="40dp"
           android:height="40dp"/>

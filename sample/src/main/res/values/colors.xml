@@ -15,14 +15,12 @@
   ~ limitations under the License.
   -->
 
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-
-  <solid
-      android:color="@color/white"/>
-
-  <size
-      android:width="40dp"
-      android:height="40dp"/>
-</shape>
+<resources>
+  <color name="black">#FF000000</color>
+  <color name="white">#FFFFFFFF</color>
+  <color name="brown">#FF4B2D29</color>
+  <color name="green">#FF42543C</color>
+  <color name="orange">#FFE29B33</color>
+  <color name="pink">#FFE9C7C7</color>
+  <color name="gray">#FF929292</color>
+</resources>

@@ -20,7 +20,7 @@
     android:shape="oval">
 
   <solid
-      android:color="#FFE9C7C7"/>
+      android:color="@color/pink"/>
 
   <size
       android:width="40dp"

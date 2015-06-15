@@ -22,7 +22,7 @@
     <item name="android:layout_width">40dp</item>
     <item name="android:background">@drawable/bg_item_with_title</item>
     <item name="android:layout_margin">4dp</item>
-    <item name="android:textColor">#FF929292</item>
+    <item name="android:textColor">@color/gray</item>
     <item name="android:textSize">18sp</item>
   </style>
 
@@ -31,10 +31,9 @@
     <item name="android:layout_width">40dp</item>
     <item name="android:layout_margin">4dp</item>
     <item name="android:textSize">9sp</item>
-    <item name="android:textColor">#FFFFFFFF</item>
+    <item name="android:textColor">@color/white</item>
     <item name="android:layout_gravity">bottom|center_horizontal</item>
     <item name="android:background">@drawable/item_brown</item>
   </style>
-
 
 </resources>
