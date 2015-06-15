@@ -48,10 +48,15 @@ import java.util.List;
 public class ExpandableSelector extends FrameLayout {
 
   private static final String Y_ANIMATION = "translationY";
+  private static final int DEFAULT_ANIMATION_DURATION = 300;
+  private static final float CONTAINER_ANIMATION_OFFSET = 1.16f;
 
   private List<ExpandableItem> expandableItems = Collections.EMPTY_LIST;
   private List<View> buttons = new ArrayList<View>();
+
   private boolean hideBackgroundIfCollapsed;
+  private int animationDuration;
+
   private boolean isCollapsed = true;
   private Drawable expandedBackground;
 
@@ -105,6 +110,7 @@ public class ExpandableSelector extends FrameLayout {
       float toY = calculateExpandedYPosition(i);
       ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(button, Y_ANIMATION, toY);
       objectAnimator.setInterpolator(interpolator);
+      objectAnimator.setDuration(animationDuration);
       objectAnimator.start();
     }
     updateBackground();
@@ -123,6 +129,7 @@ public class ExpandableSelector extends FrameLayout {
       if (i != numberOfButtons - 1) {
         objectAnimator.addListener(new VisibilityAnimatorListener(button, View.INVISIBLE));
       }
+      objectAnimator.setDuration(animationDuration);
       objectAnimator.start();
     }
   }
@@ -155,6 +162,7 @@ public class ExpandableSelector extends FrameLayout {
     TypedArray attributes =
         getContext().obtainStyledAttributes(attrs, R.styleable.expandable_selector);
     initializeHideBackgroundIfCollapsed(attributes);
+    initializeAnimationDuration(attributes);
     attributes.recycle();
   }
 
@@ -171,6 +179,11 @@ public class ExpandableSelector extends FrameLayout {
         attributes.getBoolean(R.styleable.expandable_selector_hide_background_if_collapsed, false);
     expandedBackground = getBackground();
     updateBackground();
+  }
+
+  private void initializeAnimationDuration(TypedArray attributes) {
+    animationDuration = attributes.getInteger(R.styleable.expandable_selector_animation_duration,
+        DEFAULT_ANIMATION_DURATION);
   }
 
   private void updateBackground() {
@@ -274,8 +287,9 @@ public class ExpandableSelector extends FrameLayout {
     float toWidth = getWidth();
     float toHeight = getSumHeight();
     ResizeAnimation resizeAnimation = new ResizeAnimation(this, toWidth, toHeight);
-    Interpolator interpolator = getExpandAnimationInterpolator();
+    Interpolator interpolator = getContainerAnimationInterpolator();
     resizeAnimation.setInterpolator(interpolator);
+    resizeAnimation.setDuration((long) (animationDuration * CONTAINER_ANIMATION_OFFSET));
     resizeAnimation.setAnimationListener(new AbstractAnimationListener() {
       @Override public void onAnimationEnd(Animation animation) {
         notifyExpanded();
@@ -288,8 +302,9 @@ public class ExpandableSelector extends FrameLayout {
     float toWidth = getWidth();
     float toHeight = getFirstItemHeight();
     ResizeAnimation resizeAnimation = new ResizeAnimation(this, toWidth, toHeight);
-    Interpolator interpolator = getCollapseAnimationInterpolator();
+    Interpolator interpolator = getContainerAnimationInterpolator();
     resizeAnimation.setInterpolator(interpolator);
+    resizeAnimation.setDuration((long) (animationDuration * CONTAINER_ANIMATION_OFFSET));
     resizeAnimation.setAnimationListener(new AbstractAnimationListener() {
       @Override public void onAnimationEnd(Animation animation) {
         updateBackground();
@@ -317,11 +332,7 @@ public class ExpandableSelector extends FrameLayout {
     return new DecelerateInterpolator();
   }
 
-  private Interpolator getExpandAnimationInterpolator() {
-    return new AccelerateInterpolator();
-  }
-
-  private Interpolator getCollapseAnimationInterpolator() {
+  private Interpolator getContainerAnimationInterpolator() {
     return new DecelerateInterpolator();
   }
 

@@ -59,6 +59,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       android:layout_centerHorizontal="true"
+      expandable_selector:animation_duration="100"
       android:layout_margin="10dp"/>
 
 
