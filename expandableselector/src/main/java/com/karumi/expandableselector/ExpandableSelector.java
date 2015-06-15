@@ -33,8 +33,17 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * FrameLayout extension used to show a list of ExpandableItems instances which can be collapsed
- * and expanded using an animation.
+ * FrameLayout extension used to show a list of ExpandableItems instances represented with Button
+ * or ImageButton widgets which can be collapsed and expanded using an animation. The configurable
+ * elements of the class are:
+ *
+ * - List of items to show represented with ExpandableItem instances.
+ * - Time used to perform the collapse/expand animations. Expressed in milliseconds.
+ * - Show or hide the view background when the List of ExpandaleItems are collapsed.
+ * - Configure a ExpandableSelectorListeners to be notified when the view is going to be
+ * collapsed/expanded or has
+ * been collapsed/expanded.
+ * - Configure a OnExpandableItemClickListener to be notified when an item is clicked.
  */
 public class ExpandableSelector extends FrameLayout {
 
@@ -43,12 +52,11 @@ public class ExpandableSelector extends FrameLayout {
   private List<ExpandableItem> expandableItems = Collections.EMPTY_LIST;
   private List<View> buttons = new ArrayList<View>();
   private ExpandableSelectorAnimator expandableSelectorAnimator;
+  private ExpandableSelectorListener listener;
+  private OnExpandableItemClickListener clickListener;
 
   private boolean hideBackgroundIfCollapsed;
   private Drawable expandedBackground;
-
-  private ExpandableSelectorListener listener;
-  private OnExpandableItemClickListener clickListener;
 
   public ExpandableSelector(Context context) {
     this(context, null);
@@ -72,12 +80,13 @@ public class ExpandableSelector extends FrameLayout {
 
   /**
    * Configures a List<ExpandableItem> to be shown. By default, the list of ExpandableItems is
-   * going to be shown collapsed. Please take into account that this method creates ImageButtons
-   * based on the size of the list passed as parameter. Don't use this library as a RecyclerView
-   * and take into account the number of elements to show.
+   * going to be shown collapsed. Please take into account that this method creates
+   * ImageButton/Button widgets based on the size of the list passed as parameter. Don't use this
+   * library as a RecyclerView and take into account the number of elements to show.
    */
   public void showExpandableItems(List<ExpandableItem> expandableItems) {
     validateExpandableItems(expandableItems);
+
     reset();
     setExpandableItems(expandableItems);
     renderExpandableItems();
@@ -85,6 +94,11 @@ public class ExpandableSelector extends FrameLayout {
     bringChildsToFront(expandableItems);
   }
 
+  /**
+   * Performs different animations to show the previously configured ExpandableItems transformed
+   * into Button widgets. Notifies the ExpandableSelectorListener instance there was previously
+   * configured.
+   */
   public void expand() {
     expandableSelectorAnimator.expand(new ExpandableSelectorAnimator.Listener() {
       @Override public void onAnimationFinished() {
@@ -95,6 +109,11 @@ public class ExpandableSelector extends FrameLayout {
     updateBackground();
   }
 
+  /**
+   * Performs different animations to hide the previously configured ExpandableItems transformed
+   * into Button widgets. Notifies the ExpandableSelectorListener instance there was previously
+   * configured.
+   */
   public void collapse() {
     expandableSelectorAnimator.collapse(new ExpandableSelectorAnimator.Listener() {
       @Override public void onAnimationFinished() {
@@ -105,26 +124,50 @@ public class ExpandableSelector extends FrameLayout {
     notifyCollapse();
   }
 
+  /**
+   * Returns true if the view is collapsed and false if the view is expanded.
+   */
   public boolean isCollapsed() {
-    return expandableSelectorAnimator == null || expandableSelectorAnimator.isCollapsed();
+    return expandableSelectorAnimator.isCollapsed();
   }
 
+  /**
+   * Returns true if the view is expanded and false if the view is collapsed.
+   */
   public boolean isExpanded() {
-    return !isCollapsed();
+    return expandableSelectorAnimator.isExpanded();
   }
 
+  /**
+   * Configures a ExpandableSelectorListener instance to be notified when different collapse/expand
+   * animations be performed.
+   */
   public void setExpandableSelectorListener(ExpandableSelectorListener listener) {
     this.listener = listener;
   }
 
+  /**
+   * Configures a OnExpandableItemClickListener instance to be notified when a Button/ImageButton
+   * inside ExpandableSelector be clicked. If the component is collapsed an the first button is
+   * clicked the listener will not be notified. This listener will be notified about button clicks
+   * just when ExpandableSelector be collapsed.
+   */
   public void setOnExpandableItemClickListener(OnExpandableItemClickListener clickListener) {
     this.clickListener = clickListener;
   }
 
+  /**
+   * Given a position passed as parameter returns the ExpandableItem associated.
+   */
   public ExpandableItem getExpandableItem(int expandableItemPosition) {
     return expandableItems.get(expandableItemPosition);
   }
 
+  /**
+   * Changes the ExpandableItem associated to a given position and updates the Button widget to
+   * show
+   * the new ExpandableItem information.
+   */
   public void updateExpandableItem(int expandableItemPosition, ExpandableItem expandableItem) {
     validateExpandableItem(expandableItem);
     expandableItems.remove(expandableItemPosition);
@@ -136,19 +179,10 @@ public class ExpandableSelector extends FrameLayout {
   private void initializeView(AttributeSet attrs) {
     TypedArray attributes =
         getContext().obtainStyledAttributes(attrs, R.styleable.expandable_selector);
-    initializeHideBackgroundIfCollapsed(attributes);
     initializeAnimationDuration(attributes);
+    initializeHideBackgroundIfCollapsed(attributes);
     initializeHideFirstItemOnCollapse(attributes);
     attributes.recycle();
-  }
-
-  private void reset() {
-    this.expandableItems = Collections.EMPTY_LIST;
-    for (View button : buttons) {
-      removeView(button);
-    }
-    this.buttons = new ArrayList<View>();
-    expandableSelectorAnimator.setButtons(buttons);
   }
 
   private void initializeHideBackgroundIfCollapsed(TypedArray attributes) {
@@ -180,6 +214,15 @@ public class ExpandableSelector extends FrameLayout {
     } else {
       setBackgroundResource(android.R.color.transparent);
     }
+  }
+
+  private void reset() {
+    this.expandableItems = Collections.EMPTY_LIST;
+    for (View button : buttons) {
+      removeView(button);
+    }
+    this.buttons = new ArrayList<View>();
+    expandableSelectorAnimator.reset();
   }
 
   private void renderExpandableItems() {

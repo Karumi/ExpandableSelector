@@ -23,7 +23,8 @@ import android.view.animation.Transformation;
 
 /**
  * Animation extension created to resize a widget in two dimensions given the from and to width and
- * height.
+ * height. This Animation changes the width and the height associated to the widget and invokes
+ * requestLayout() method to redraw it.
  */
 class ResizeAnimation extends Animation {
 

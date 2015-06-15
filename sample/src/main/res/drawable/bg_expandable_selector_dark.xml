@@ -15,13 +15,11 @@
   ~ limitations under the License.
   -->
 
-<resources>
-  <declare-styleable name="expandable_selector">
-    <attr name="hide_background_if_collapsed" format="boolean"/>
-    <attr name="animation_duration" format="integer"/>
-    <attr name="hide_first_item_on_collapse" format="boolean"/>
-  </declare-styleable>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
 
-  <attr name="expandableItemStyle"/>
+  <corners android:radius="100dp"/>
+  <solid android:color="@android:color/black"/>
 
-</resources>
+</shape>

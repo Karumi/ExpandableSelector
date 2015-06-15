@@ -18,7 +18,8 @@ package com.karumi.expandableselector;
 
 /**
  * Contains all the information needed to render a expandable item inside a ExpandableSelector
- * widget. The information you can render is a Drawable identifier or a String used as title.
+ * widget. The information you can render is a Drawable identifier, a String used as title and a
+ * Drawable used as background.
  */
 public class ExpandableItem {
 

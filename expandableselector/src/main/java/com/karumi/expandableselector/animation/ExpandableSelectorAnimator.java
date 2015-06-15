@@ -16,6 +16,8 @@
 
 package com.karumi.expandableselector.animation;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.view.Gravity;
@@ -25,11 +27,13 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Performs all the animations and size or position changes related to the
- * ExpandableSelectorComponent.
+ * ExpandableSelectorComponent and controls the view state in terms of collapsed/expanded
+ * animation.
  */
 public class ExpandableSelectorAnimator {
 
@@ -48,14 +52,33 @@ public class ExpandableSelectorAnimator {
     this.animationDuration = animationDuration;
   }
 
+  /**
+   * Returns true if the ExpandableSelector widget is collapsed or false if is expanded.
+   */
   public boolean isCollapsed() {
     return isCollapsed;
   }
 
+  /**
+   * Returns true if the ExpandableSelector widget is expanded or false if is collapsed.
+   */
+  public boolean isExpanded() {
+    return !isCollapsed();
+  }
+
+  /**
+   * Configures the List of buttons used to calculate the animation parameters.
+   */
   public void setButtons(List<View> buttons) {
     this.buttons = buttons;
   }
 
+  /**
+   * Expands the ExpandableSelector performing a resize animation and at the same time moves the
+   * buttons configures as childrens to the associated position given the order in the List<View>
+   * used to keep the reference to the buttons. The visibility of the buttons inside the
+   * ExpandableSelector changes to View.VISIBLE before to perform the animation.
+   */
   public void expand(Listener listener) {
     setCollapsed(false);
     changeButtonsVisibility(View.VISIBLE);
@@ -63,10 +86,42 @@ public class ExpandableSelectorAnimator {
     expandContainer(listener);
   }
 
+  /**
+   * Collapses the ExpandableSelector performing a resize animation and at the same time moves the
+   * buttons configures as childrens to the associated position given the order in the List<View>
+   * used to keep the reference to the buttons. The visibility of the buttons inside the
+   * ExpandableSelector changes to View.INVISIBLE after the resize animation.
+   */
   public void collapse(Listener listener) {
     setCollapsed(true);
     collapseButtons();
     collapseContainer(listener);
+  }
+
+  /**
+   * Configures the Button/ImageButton added to the ExpandableSelector to match with the initial
+   * configuration needed by the component.
+   */
+  public void initializeButton(View button) {
+    changeGravityToBottomCenterHorizontal(button);
+  }
+
+  /**
+   * Configures the ExpandableSelectorAnimator to change the first item visibility to View.VISIBLE
+   * /
+   * View.INVISIBLE once the collapse/expand animation has been performed.
+   */
+  public void setHideFirstItemOnCollapse(boolean hideFirstItemOnCollapsed) {
+    this.hideFirstItemOnCollapse = hideFirstItemOnCollapsed;
+  }
+
+  /**
+   * Returns the component to the initial state without remove configuration related to animation
+   * durations of if the first item visibility has to be changed.
+   */
+  public void reset() {
+    this.buttons = new ArrayList<View>();
+    this.isCollapsed = true;
   }
 
   private void setCollapsed(boolean isCollapsed) {
@@ -75,27 +130,76 @@ public class ExpandableSelectorAnimator {
 
   private void expandButtons() {
     int numberOfButtons = buttons.size();
+    Animator[] animations = new Animator[numberOfButtons];
     for (int i = 0; i < numberOfButtons; i++) {
       View button = buttons.get(i);
       TimeInterpolator interpolator = getExpandAnimatorInterpolation();
       float toY = calculateExpandedYPosition(i);
-      ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(button, Y_ANIMATION, toY);
-      objectAnimator.setInterpolator(interpolator);
-      objectAnimator.setDuration(animationDuration);
-      objectAnimator.start();
+      animations[i] = createAnimatorForButton(interpolator, button, toY);
     }
+    playAnimatorsTogether(animations);
   }
 
   private void collapseButtons() {
     int numberOfButtons = buttons.size();
     TimeInterpolator interpolator = getCollapseAnimatorInterpolation();
+    Animator[] animations = new Animator[numberOfButtons];
     for (int i = 0; i < numberOfButtons; i++) {
       View button = buttons.get(i);
-      ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(button, Y_ANIMATION, 0);
-      objectAnimator.setInterpolator(interpolator);
-      objectAnimator.setDuration(animationDuration);
-      objectAnimator.start();
+      float toY = 0;
+      animations[i] = createAnimatorForButton(interpolator, button, toY);
     }
+    playAnimatorsTogether(animations);
+  }
+
+  private void expandContainer(final Listener listener) {
+    float toWidth = container.getWidth();
+    float toHeight = getSumHeight();
+    Interpolator interpolator = getContainerAnimationInterpolator();
+    ResizeAnimation resizeAnimation =
+        createResizeAnimation(toWidth, interpolator, toHeight, listener);
+    container.startAnimation(resizeAnimation);
+  }
+
+  private void collapseContainer(final Listener listener) {
+    float toWidth = container.getWidth();
+    float toHeight = getFirstItemHeight();
+    Interpolator interpolator = getContainerAnimationInterpolator();
+    ResizeAnimation resizeAnimation =
+        createResizeAnimation(toWidth, interpolator, toHeight, new Listener() {
+          @Override public void onAnimationFinished() {
+            changeButtonsVisibility(View.INVISIBLE);
+            listener.onAnimationFinished();
+          }
+        });
+    container.startAnimation(resizeAnimation);
+  }
+
+  private ObjectAnimator createAnimatorForButton(TimeInterpolator interpolator, View button,
+      float toY) {
+    ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(button, Y_ANIMATION, toY);
+    objectAnimator.setInterpolator(interpolator);
+    objectAnimator.setDuration(animationDuration);
+    return objectAnimator;
+  }
+
+  private ResizeAnimation createResizeAnimation(float toWidth, Interpolator interpolator,
+      float toHeight, final Listener listener) {
+    ResizeAnimation resizeAnimation = new ResizeAnimation(container, toWidth, toHeight);
+    resizeAnimation.setInterpolator(interpolator);
+    resizeAnimation.setDuration((long) (animationDuration * CONTAINER_ANIMATION_OFFSET));
+    resizeAnimation.setAnimationListener(new AbstractAnimationListener() {
+      @Override public void onAnimationEnd(Animation animation) {
+        listener.onAnimationFinished();
+      }
+    });
+    return resizeAnimation;
+  }
+
+  private void playAnimatorsTogether(Animator[] animations) {
+    AnimatorSet animatorSet = new AnimatorSet();
+    animatorSet.playTogether(animations);
+    animatorSet.start();
   }
 
   private float calculateExpandedYPosition(int buttonPosition) {
@@ -103,40 +207,9 @@ public class ExpandableSelectorAnimator {
     float y = 0;
     for (int i = numberOfButtons - 1; i > buttonPosition; i--) {
       View button = buttons.get(i);
-      y = y + button.getHeight() + getMarginRight(button) + getMarginLeft(button);
+      y = y - button.getHeight() - getMarginRight(button) - getMarginLeft(button);
     }
-    return -y;
-  }
-
-  private void expandContainer(final Listener listener) {
-    float toWidth = container.getWidth();
-    float toHeight = getSumHeight();
-    ResizeAnimation resizeAnimation = new ResizeAnimation(container, toWidth, toHeight);
-    Interpolator interpolator = getContainerAnimationInterpolator();
-    resizeAnimation.setInterpolator(interpolator);
-    resizeAnimation.setDuration((long) (animationDuration * CONTAINER_ANIMATION_OFFSET));
-    resizeAnimation.setAnimationListener(new AbstractAnimationListener() {
-      @Override public void onAnimationEnd(Animation animation) {
-        listener.onAnimationFinished();
-      }
-    });
-    container.startAnimation(resizeAnimation);
-  }
-
-  private void collapseContainer(final Listener listener) {
-    float toWidth = container.getWidth();
-    float toHeight = getFirstItemHeight();
-    ResizeAnimation resizeAnimation = new ResizeAnimation(container, toWidth, toHeight);
-    Interpolator interpolator = getContainerAnimationInterpolator();
-    resizeAnimation.setInterpolator(interpolator);
-    resizeAnimation.setDuration((long) (animationDuration * CONTAINER_ANIMATION_OFFSET));
-    resizeAnimation.setAnimationListener(new AbstractAnimationListener() {
-      @Override public void onAnimationEnd(Animation animation) {
-        listener.onAnimationFinished();
-        changeButtonsVisibility(View.INVISIBLE);
-      }
-    });
-    container.startAnimation(resizeAnimation);
+    return y;
   }
 
   private void changeButtonsVisibility(int visibility) {
@@ -190,14 +263,6 @@ public class ExpandableSelectorAnimator {
   private void changeGravityToBottomCenterHorizontal(View view) {
     ((FrameLayout.LayoutParams) view.getLayoutParams()).gravity =
         Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-  }
-
-  public void initializeButton(View button) {
-    changeGravityToBottomCenterHorizontal(button);
-  }
-
-  public void setHideFirstItemOnCollapse(boolean hideFirstItemOnCollapsed) {
-    this.hideFirstItemOnCollapse = hideFirstItemOnCollapsed;
   }
 
   public interface Listener {

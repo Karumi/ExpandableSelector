@@ -19,8 +19,9 @@ package com.karumi.expandableselector.animation;
 import android.view.animation.Animation;
 
 /**
- * AnimationListener implementation created to avoid override every method when a anonymous
- * AnimationListener is declared.
+ * Abstract AnimationListener implementation created to avoid override every method when a
+ * anonymous AnimationListener is declared. Create new instances of AbstractAnimationListener
+ * instead of AnimationListener to reduce the number of methods to override.
  */
 abstract class AbstractAnimationListener implements Animation.AnimationListener {
 

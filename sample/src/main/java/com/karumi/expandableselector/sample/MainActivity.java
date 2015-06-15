@@ -43,35 +43,6 @@ public class MainActivity extends Activity {
     initializeCloseAllButton();
   }
 
-  private void initializeCloseAllButton() {
-    final View closeButton = findViewById(R.id.bt_close);
-    closeButton.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
-        colorsExpandableSelector.collapse();
-        sizesExpandableSelector.collapse();
-        iconsExpandableSelector.collapse();
-        updateIconsFirstButtonResource(R.mipmap.ic_keyboard_arrow_up_black_36dp);
-      }
-    });
-    colorsExpandableSelector.setExpandableSelectorListener(new ExpandableSelectorListener() {
-      @Override public void onCollapse() {
-
-      }
-
-      @Override public void onExpand() {
-
-      }
-
-      @Override public void onCollapsed() {
-        colorsHeaderButton.setVisibility(View.VISIBLE);
-      }
-
-      @Override public void onExpanded() {
-
-      }
-    });
-  }
-
   private void initializeColorsExpandableSelector() {
     colorsExpandableSelector = (ExpandableSelector) findViewById(R.id.es_colors);
     List<ExpandableItem> expandableItems = new ArrayList<ExpandableItem>();
@@ -161,6 +132,14 @@ public class MainActivity extends Activity {
           iconsExpandableSelector.collapse();
           updateIconsFirstButtonResource(R.mipmap.ic_keyboard_arrow_up_black_36dp);
         }
+        switch (index) {
+          case 1:
+            showToast("Gamepad icon button clicked.");
+            break;
+          case 2:
+            showToast("Hub icon button clicked.");
+            break;
+        }
       }
     });
     iconsExpandableSelector.setExpandableSelectorListener(new ExpandableSelectorListener() {
@@ -174,6 +153,35 @@ public class MainActivity extends Activity {
 
       @Override public void onCollapsed() {
 
+      }
+
+      @Override public void onExpanded() {
+
+      }
+    });
+  }
+
+  private void initializeCloseAllButton() {
+    final View closeButton = findViewById(R.id.bt_close);
+    closeButton.setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View v) {
+        colorsExpandableSelector.collapse();
+        sizesExpandableSelector.collapse();
+        iconsExpandableSelector.collapse();
+        updateIconsFirstButtonResource(R.mipmap.ic_keyboard_arrow_up_black_36dp);
+      }
+    });
+    colorsExpandableSelector.setExpandableSelectorListener(new ExpandableSelectorListener() {
+      @Override public void onCollapse() {
+
+      }
+
+      @Override public void onExpand() {
+
+      }
+
+      @Override public void onCollapsed() {
+        colorsHeaderButton.setVisibility(View.VISIBLE);
       }
 
       @Override public void onExpanded() {
