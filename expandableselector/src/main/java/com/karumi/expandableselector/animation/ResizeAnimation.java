@@ -25,7 +25,7 @@ import android.view.animation.Transformation;
  * Animation extension created to resize a widget in two dimensions given the from and to width and
  * height.
  */
-public class ResizeAnimation extends Animation {
+class ResizeAnimation extends Animation {
 
   private static final long DEFAULT_DURATION_IN_MS = 250;
 
@@ -35,7 +35,7 @@ public class ResizeAnimation extends Animation {
   private float toWidth;
   private float fromWidth;
 
-  public ResizeAnimation(View view, float toWidth, float toHeight) {
+  ResizeAnimation(View view, float toWidth, float toHeight) {
     this.toHeight = toHeight;
     this.toWidth = toWidth;
     this.fromHeight = view.getHeight();

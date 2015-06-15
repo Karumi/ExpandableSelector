@@ -41,6 +41,7 @@ public class ExpandableSelectorAnimator {
 
   private List<View> buttons;
   private boolean isCollapsed = true;
+  private boolean hideFirstItemOnCollapse;
 
   public ExpandableSelectorAnimator(View container, int animationDuration) {
     this.container = container;
@@ -57,6 +58,7 @@ public class ExpandableSelectorAnimator {
 
   public void expand(Listener listener) {
     setCollapsed(false);
+    changeButtonsVisibility(View.VISIBLE);
     expandButtons();
     expandContainer(listener);
   }
@@ -75,7 +77,6 @@ public class ExpandableSelectorAnimator {
     int numberOfButtons = buttons.size();
     for (int i = 0; i < numberOfButtons; i++) {
       View button = buttons.get(i);
-      button.setVisibility(View.VISIBLE);
       TimeInterpolator interpolator = getExpandAnimatorInterpolation();
       float toY = calculateExpandedYPosition(i);
       ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(button, Y_ANIMATION, toY);
@@ -92,9 +93,6 @@ public class ExpandableSelectorAnimator {
       View button = buttons.get(i);
       ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(button, Y_ANIMATION, 0);
       objectAnimator.setInterpolator(interpolator);
-      if (i != numberOfButtons - 1) {
-        objectAnimator.addListener(new VisibilityAnimatorListener(button, View.INVISIBLE));
-      }
       objectAnimator.setDuration(animationDuration);
       objectAnimator.start();
     }
@@ -135,9 +133,18 @@ public class ExpandableSelectorAnimator {
     resizeAnimation.setAnimationListener(new AbstractAnimationListener() {
       @Override public void onAnimationEnd(Animation animation) {
         listener.onAnimationFinished();
+        changeButtonsVisibility(View.INVISIBLE);
       }
     });
     container.startAnimation(resizeAnimation);
+  }
+
+  private void changeButtonsVisibility(int visibility) {
+    int lastItem = hideFirstItemOnCollapse ? buttons.size() : buttons.size() - 1;
+    for (int i = 0; i < lastItem; i++) {
+      View button = buttons.get(i);
+      button.setVisibility(visibility);
+    }
   }
 
   private TimeInterpolator getExpandAnimatorInterpolation() {
@@ -187,6 +194,10 @@ public class ExpandableSelectorAnimator {
 
   public void initializeButton(View button) {
     changeGravityToBottomCenterHorizontal(button);
+  }
+
+  public void setHideFirstItemOnCollapse(boolean hideFirstItemOnCollapsed) {
+    this.hideFirstItemOnCollapse = hideFirstItemOnCollapsed;
   }
 
   public interface Listener {

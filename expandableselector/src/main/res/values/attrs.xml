@@ -19,6 +19,7 @@
   <declare-styleable name="expandable_selector">
     <attr name="hide_background_if_collapsed" format="boolean"/>
     <attr name="animation_duration" format="integer"/>
+    <attr name="hide_first_item_on_collapse" format="boolean"></attr>
   </declare-styleable>
 
   <attr name="expandableItemStyle"/>

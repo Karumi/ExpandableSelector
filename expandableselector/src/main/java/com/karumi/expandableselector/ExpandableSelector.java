@@ -134,6 +134,7 @@ public class ExpandableSelector extends FrameLayout {
         getContext().obtainStyledAttributes(attrs, R.styleable.expandable_selector);
     initializeHideBackgroundIfCollapsed(attributes);
     initializeAnimationDuration(attributes);
+    initializeHideFirstItemOnCollapse(attributes);
     attributes.recycle();
   }
 
@@ -158,6 +159,12 @@ public class ExpandableSelector extends FrameLayout {
         attributes.getInteger(R.styleable.expandable_selector_animation_duration,
             DEFAULT_ANIMATION_DURATION);
     expandableSelectorAnimator = new ExpandableSelectorAnimator(this, animationDuration);
+  }
+
+  private void initializeHideFirstItemOnCollapse(TypedArray attributes) {
+    boolean hideFirstItemOnCollapsed =
+        attributes.getBoolean(R.styleable.expandable_selector_hide_first_item_on_collapse, false);
+    expandableSelectorAnimator.setHideFirstItemOnCollapse(hideFirstItemOnCollapsed);
   }
 
   private void updateBackground() {

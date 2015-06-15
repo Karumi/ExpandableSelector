@@ -22,7 +22,7 @@ import android.view.animation.Animation;
  * AnimationListener implementation created to avoid override every method when a anonymous
  * AnimationListener is declared.
  */
-public abstract class AbstractAnimationListener implements Animation.AnimationListener {
+abstract class AbstractAnimationListener implements Animation.AnimationListener {
 
   @Override public void onAnimationStart(Animation animation) {
 
