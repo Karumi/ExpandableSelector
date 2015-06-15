@@ -130,12 +130,24 @@ public class ExpandableSelector extends FrameLayout {
     return isCollapsed;
   }
 
+  public boolean isExpanded() {
+    return !isCollapsed();
+  }
+
   public void setExpandableSelectorListener(ExpandableSelectorListener listener) {
     this.listener = listener;
   }
 
   public void setOnExpandableItemClickListener(OnExpandableItemClickListener clickListener) {
     this.clickListener = clickListener;
+  }
+
+  public void updateExpandableItem(int expandableItemPosition, ExpandableItem expandableItem) {
+    validateExpandableItem(expandableItem);
+    expandableItems.remove(expandableItemPosition);
+    expandableItems.add(expandableItemPosition, expandableItem);
+    int buttonPosition = buttons.size() - 1 - expandableItemPosition;
+    configureButton(buttons.get(buttonPosition), expandableItem);
   }
 
   private void initializeView(AttributeSet attrs) {
@@ -331,13 +343,6 @@ public class ExpandableSelector extends FrameLayout {
     return height + topMargin + bottomMargin;
   }
 
-  private void validateExpandableItems(List<ExpandableItem> expandableItems) {
-    if (expandableItems == null) {
-      throw new IllegalArgumentException(
-          "The List<ExpandableItem> passed as argument can't be null");
-    }
-  }
-
   private void notifyExpand() {
     if (hasListenerConfigured()) {
       listener.onExpand();
@@ -364,5 +369,19 @@ public class ExpandableSelector extends FrameLayout {
 
   private boolean hasListenerConfigured() {
     return listener != null;
+  }
+
+  private void validateExpandableItem(ExpandableItem expandableItem) {
+    if (expandableItem == null) {
+      throw new IllegalArgumentException(
+          "You can't use a null instance of ExpandableItem as parameter.");
+    }
+  }
+
+  private void validateExpandableItems(List<ExpandableItem> expandableItems) {
+    if (expandableItems == null) {
+      throw new IllegalArgumentException(
+          "The List<ExpandableItem> passed as argument can't be null");
+    }
   }
 }

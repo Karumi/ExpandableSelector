@@ -50,6 +50,7 @@ public class MainActivity extends Activity {
         colorsExpandableSelector.collapse();
         sizesExpandableSelector.collapse();
         iconsExpandableSelector.collapse();
+        updateIconsFirstButtonResource(R.mipmap.ic_keyboard_arrow_up_black_36dp);
       }
     });
     colorsExpandableSelector.setExpandableSelectorListener(new ExpandableSelectorListener() {
@@ -147,18 +148,35 @@ public class MainActivity extends Activity {
     iconsExpandableSelector.showExpandableItems(expandableItems);
     iconsExpandableSelector.setOnExpandableItemClickListener(new OnExpandableItemClickListener() {
       @Override public void onExpandableItemClickListener(int index, View view) {
-        switch (index) {
-          case 0:
-            showToast("Arrow button clicked");
-            break;
-          case 1:
-            showToast("Gamepad button clicked");
-            break;
-          default:
-            showToast("Hub button clicked");
+        if (index == 0 && iconsExpandableSelector.isExpanded()) {
+          iconsExpandableSelector.collapse();
+          updateIconsFirstButtonResource(R.mipmap.ic_keyboard_arrow_up_black_36dp);
         }
       }
     });
+    iconsExpandableSelector.setExpandableSelectorListener(new ExpandableSelectorListener() {
+      @Override public void onCollapse() {
+
+      }
+
+      @Override public void onExpand() {
+        updateIconsFirstButtonResource(R.mipmap.ic_keyboard_arrow_down_black_36dp);
+      }
+
+      @Override public void onCollapsed() {
+
+      }
+
+      @Override public void onExpanded() {
+
+      }
+    });
+  }
+
+  private void updateIconsFirstButtonResource(int ic_keyboard_arrow_up_black_36dp) {
+    ExpandableItem arrowUpExpandableItem = new ExpandableItem();
+    arrowUpExpandableItem.setResourceId(ic_keyboard_arrow_up_black_36dp);
+    iconsExpandableSelector.updateExpandableItem(0, arrowUpExpandableItem);
   }
 
   private void showToast(String message) {
