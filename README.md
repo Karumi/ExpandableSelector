@@ -1,7 +1,7 @@
-HeaderRecyclerView
+ExpandableSelector
 ==================
 
-ExpandableSelector is an Android library created to be able to show a list of Button/ImageButton widgets inside a animated container which can be collapsed expanded.
+ExpandableSelector is an Android library created to show a list of Button/ImageButton widgets inside a animated container which can be collapsed or expanded.
 
 Screenshots
 -----------
@@ -18,13 +18,13 @@ To use ``ExpandableSelector`` in your application you have to follow this steps:
 ```xml
 
  <com.karumi.expandableselector.ExpandableSelector
-      android:id="@+id/es_colors"
+      android:id="@+id/es_sizes"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"/>
 
 ```
 
-* 2 - During your Activity/Fragment creation lifecycle create a list of ``ExpandableItem`` instances and configure them to be used inside your ``ExpandableSelector`` instance:
+* 2 - During your Activity/Fragment creation lifecycle create a list of ``ExpandableItem`` instances and configure them to be used inside your ``ExpandableSelector`` widget:
 
 ```java
 
@@ -111,6 +111,25 @@ The resources you can show in the Button/ImageButton widgets automatically added
 * Title configured as Button text.
 
 All this information will be provided to the ``ExpandableSelector`` inside a ``List<ExpandableItem>`` object created by the library user.
+
+Some extra configuration parameters can be provided from the XML like styleable attributes:
+
+```xml
+
+  <com.karumi.expandableselector.ExpandableSelector
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      expandable_selector:hide_background_if_collapsed="true"
+      expandable_selector:hide_first_item_on_collapse="true"
+      expandable_selector:animation_duration="100">
+
+```
+
+The attributes you can configure are:
+
+* expandable_selector:hide_background_if_collapsed: Changes the background associated to the ``ExpandableSelector`` widget to a transparent one while the widget is collapsed.
+* expandable_selector:hide_first_item_on_collapse: Changes the first item visibility to View.INVISIBLE when the ``ExpandableSelector`` is collapsed.
+* expandable_selector:animation_duration: Changes the animation duration in milliseconds to the one indicated.
 
 Add it to your project
 ----------------------
