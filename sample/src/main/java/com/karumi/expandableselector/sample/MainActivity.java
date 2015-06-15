@@ -16,8 +16,8 @@
 
 package com.karumi.expandableselector.sample;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Toast;
 import com.karumi.expandableselector.ExpandableItem;
@@ -27,7 +27,7 @@ import com.karumi.expandableselector.OnExpandableItemClickListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 
   private View colorsHeaderButton;
   private ExpandableSelector colorsExpandableSelector;

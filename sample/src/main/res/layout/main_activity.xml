@@ -29,23 +29,7 @@
       android:text="@string/collapse_button_text"
       android:layout_centerInParent="true"/>
 
-  <com.karumi.expandableselector.ExpandableSelector
-      android:id="@+id/es_colors"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:layout_alignParentRight="true"
-      android:background="@drawable/bg_expandable_selector"
-      expandable_selector:hide_background_if_collapsed="true"
-      expandable_selector:hide_first_item_on_collapse="true"
-      android:layout_margin="10dp">
-
-    <Button
-        android:id="@+id/bt_colors"
-        android:text="COLOR"
-        style="@style/ExpandableItemStyleHeader"/>
-
-  </com.karumi.expandableselector.ExpandableSelector>
+  <!-- SIZES EXPANDABLE SELECTOR -->
 
   <com.karumi.expandableselector.ExpandableSelector
       android:id="@+id/es_sizes"
@@ -53,7 +37,9 @@
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       android:layout_alignParentLeft="true"
-      android:layout_margin="10dp"/>
+      android:layout_margin="@dimen/expandable_selector_margin"/>
+
+  <!-- ICONS EXPANDABLE SELECTOR -->
 
   <com.karumi.expandableselector.ExpandableSelector
       android:id="@+id/es_icons"
@@ -61,9 +47,28 @@
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       android:layout_centerHorizontal="true"
+      android:layout_margin="@dimen/expandable_selector_margin"
       android:background="@drawable/bg_expandable_selector_dark"
-      expandable_selector:animation_duration="100"
-      android:layout_margin="10dp"/>
+      expandable_selector:animation_duration="@integer/custom_animation_duration"/>
 
+  <!-- COLORS EXPANDABLE SELECTOR -->
+
+  <com.karumi.expandableselector.ExpandableSelector
+      android:id="@+id/es_colors"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentRight="true"
+      android:layout_margin="@dimen/expandable_selector_margin"
+      android:background="@drawable/bg_expandable_selector"
+      expandable_selector:hide_background_if_collapsed="true"
+      expandable_selector:hide_first_item_on_collapse="true">
+
+    <Button
+        android:id="@+id/bt_colors"
+        android:text="@string/colors_expandable_selector_title"
+        style="@style/ExpandableItemStyleHeader"/>
+
+  </com.karumi.expandableselector.ExpandableSelector>
 
 </RelativeLayout>

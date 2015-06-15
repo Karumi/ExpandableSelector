@@ -18,19 +18,19 @@
 <resources>
 
   <style name="ExpandableItemStyle">
-    <item name="android:layout_height">40dp</item>
-    <item name="android:layout_width">40dp</item>
+    <item name="android:layout_height">@dimen/item_size</item>
+    <item name="android:layout_width">@dimen/item_size</item>
     <item name="android:background">@drawable/bg_item_with_title</item>
-    <item name="android:layout_margin">4dp</item>
+    <item name="android:layout_margin">@dimen/item_margin</item>
     <item name="android:textColor">@color/gray</item>
-    <item name="android:textSize">18sp</item>
+    <item name="android:textSize">@dimen/item_text_size</item>
   </style>
 
   <style name="ExpandableItemStyleHeader">
-    <item name="android:layout_height">40dp</item>
-    <item name="android:layout_width">40dp</item>
-    <item name="android:layout_margin">4dp</item>
-    <item name="android:textSize">9sp</item>
+    <item name="android:layout_height">@dimen/item_size</item>
+    <item name="android:layout_width">@dimen/item_size</item>
+    <item name="android:layout_margin">@dimen/item_margin</item>
+    <item name="android:textSize">@dimen/item_text_size_small</item>
     <item name="android:textColor">@color/white</item>
     <item name="android:layout_gravity">bottom|center_horizontal</item>
     <item name="android:background">@drawable/item_brown</item>

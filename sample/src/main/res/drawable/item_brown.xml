@@ -23,7 +23,7 @@
       android:color="@color/brown"/>
 
   <size
-      android:width="40dp"
-      android:height="40dp"/>
+      android:width="@dimen/item_size"
+      android:height="@dimen/item_size"/>
 </shape>
 

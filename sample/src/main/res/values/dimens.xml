@@ -15,11 +15,11 @@
   ~ limitations under the License.
   -->
 
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-
-  <corners android:radius="@dimen/background_radius"/>
-  <solid android:color="@color/black"/>
-
-</shape>
+<resources>
+  <dimen name="item_size">60dp</dimen>
+  <dimen name="item_margin">4dp</dimen>
+  <dimen name="item_text_size">18sp</dimen>
+  <dimen name="item_text_size_small">9sp</dimen>
+  <dimen name="expandable_selector_margin">10dp</dimen>
+  <dimen name="background_radius">100dp</dimen>
+</resources>

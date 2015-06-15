@@ -23,6 +23,6 @@
       android:color="@color/pink"/>
 
   <size
-      android:width="40dp"
-      android:height="40dp"/>
+      android:width="@dimen/item_size"
+      android:height="@dimen/item_size"/>
 </shape>

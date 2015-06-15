@@ -18,4 +18,5 @@
 <resources>
   <string name="app_name">Expandable Selector</string>
   <string name="collapse_button_text">Collapse</string>
+  <string name="colors_expandable_selector_title">COLORS</string>
 </resources>
