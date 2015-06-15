@@ -19,9 +19,11 @@ package com.karumi.expandableselector.sample;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 import com.karumi.expandableselector.ExpandableItem;
 import com.karumi.expandableselector.ExpandableSelector;
 import com.karumi.expandableselector.ExpandableSelectorListener;
+import com.karumi.expandableselector.OnExpandableItemClickListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +83,23 @@ public class MainActivity extends Activity {
         colorsExpandableSelector.expand();
       }
     });
+    colorsExpandableSelector.setOnExpandableItemClickListener(new OnExpandableItemClickListener() {
+      @Override public void onExpandableItemClickListener(int index, View view) {
+        switch (index) {
+          case 0:
+            showToast("Brown button clicked");
+            break;
+          case 1:
+            showToast("Green button clicked");
+            break;
+          case 2:
+            showToast("Oragne button clicked");
+            break;
+          default:
+            showToast("Pink button clicked");
+        }
+      }
+    });
   }
 
   private void initializeSizesExpandableSelector() {
@@ -91,5 +110,26 @@ public class MainActivity extends Activity {
     expandableItems.add(new ExpandableItem("M"));
     expandableItems.add(new ExpandableItem("S"));
     sizesExpandableSelector.showExpandableItems(expandableItems);
+    sizesExpandableSelector.setOnExpandableItemClickListener(new OnExpandableItemClickListener() {
+      @Override public void onExpandableItemClickListener(int index, View view) {
+        switch (index) {
+          case 0:
+            showToast("XL button clicked");
+            break;
+          case 1:
+            showToast("L button clicked");
+            break;
+          case 2:
+            showToast("M button clicked");
+            break;
+          default:
+            showToast("S button clicked");
+        }
+      }
+    });
+  }
+
+  private void showToast(String message) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
   }
 }
