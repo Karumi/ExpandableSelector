@@ -38,9 +38,7 @@ public class VisibilityAnimatorListener implements Animator.AnimatorListener {
   }
 
   @Override public void onAnimationEnd(Animator animation) {
-    if (!animation.isRunning()) {
-      view.setVisibility(visibility);
-    }
+    view.setVisibility(visibility);
   }
 
   @Override public void onAnimationCancel(Animator animation) {
