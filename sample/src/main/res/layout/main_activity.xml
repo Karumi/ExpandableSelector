@@ -53,5 +53,13 @@
       android:layout_alignParentLeft="true"
       android:layout_margin="10dp"/>
 
+  <com.karumi.expandableselector.ExpandableSelector
+      android:id="@+id/es_icons"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_centerHorizontal="true"
+      android:layout_margin="10dp"/>
+
 
 </RelativeLayout>

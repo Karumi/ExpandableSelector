@@ -24,8 +24,13 @@ public class ExpandableItem {
 
   private static final int NO_ID = -1;
 
+  private int resourceId = NO_ID;
   private final int backgroundId;
   private final String title;
+
+  public ExpandableItem() {
+    this(NO_ID, null);
+  }
 
   public ExpandableItem(int backgroundId) {
     this(backgroundId, null);
@@ -48,7 +53,19 @@ public class ExpandableItem {
     return title;
   }
 
-  public boolean hasDrawableId() {
+  public void setResourceId(int resourceId) {
+    this.resourceId = resourceId;
+  }
+
+  public int getResourceId() {
+    return resourceId;
+  }
+
+  public boolean hasResourceId() {
+    return resourceId != NO_ID;
+  }
+
+  public boolean hasBackgroundId() {
     return backgroundId != NO_ID;
   }
 

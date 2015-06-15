@@ -32,12 +32,14 @@ public class MainActivity extends Activity {
   private View colorsHeaderButton;
   private ExpandableSelector colorsExpandableSelector;
   private ExpandableSelector sizesExpandableSelector;
+  private ExpandableSelector iconsExpandableSelector;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_activity);
     initializeColorsExpandableSelector();
     initializeSizesExpandableSelector();
+    initializeIconsExpandableSelector();
     initializeCloseAllButton();
   }
 
@@ -47,6 +49,7 @@ public class MainActivity extends Activity {
       @Override public void onClick(View v) {
         colorsExpandableSelector.collapse();
         sizesExpandableSelector.collapse();
+        iconsExpandableSelector.collapse();
       }
     });
     colorsExpandableSelector.setExpandableSelectorListener(new ExpandableSelectorListener() {
@@ -124,6 +127,35 @@ public class MainActivity extends Activity {
             break;
           default:
             showToast("S button clicked");
+        }
+      }
+    });
+  }
+
+  private void initializeIconsExpandableSelector() {
+    iconsExpandableSelector = (ExpandableSelector) findViewById(R.id.es_icons);
+    List<ExpandableItem> expandableItems = new ArrayList<ExpandableItem>();
+    ExpandableItem item = new ExpandableItem();
+    item.setResourceId(R.mipmap.ic_keyboard_arrow_up_black_36dp);
+    expandableItems.add(item);
+    item = new ExpandableItem();
+    item.setResourceId(R.mipmap.ic_gamepad_black_36dp);
+    expandableItems.add(item);
+    item = new ExpandableItem();
+    item.setResourceId(R.mipmap.ic_device_hub_black_36dp);
+    expandableItems.add(item);
+    iconsExpandableSelector.showExpandableItems(expandableItems);
+    iconsExpandableSelector.setOnExpandableItemClickListener(new OnExpandableItemClickListener() {
+      @Override public void onExpandableItemClickListener(int index, View view) {
+        switch (index) {
+          case 0:
+            showToast("Arrow button clicked");
+            break;
+          case 1:
+            showToast("Gamepad button clicked");
+            break;
+          default:
+            showToast("Hub button clicked");
         }
       }
     });

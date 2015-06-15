@@ -209,10 +209,10 @@ public class ExpandableSelector extends FrameLayout {
     View button = null;
     Context context = getContext();
     LayoutInflater layoutInflater = LayoutInflater.from(context);
-    if (expandableItem.hasDrawableId()) {
-      button = layoutInflater.inflate(R.layout.expandable_item_image_button, this, false);
-    } else if (expandableItem.hasTitle()) {
+    if (expandableItem.hasTitle()) {
       button = layoutInflater.inflate(R.layout.expandable_item_button, this, false);
+    } else {
+      button = layoutInflater.inflate(R.layout.expandable_item_image_button, this, false);
     }
     int visibility = expandableItemPosition == 0 ? View.VISIBLE : View.INVISIBLE;
     button.setVisibility(visibility);
@@ -220,14 +220,18 @@ public class ExpandableSelector extends FrameLayout {
   }
 
   private void configureButton(View button, ExpandableItem expandableItem) {
-    if (expandableItem.hasDrawableId()) {
-      ImageButton imageButton = (ImageButton) button;
-      int drawableId = expandableItem.getBackgroundId();
-      imageButton.setBackgroundResource(drawableId);
-    } else if (expandableItem.hasTitle()) {
-      Button textButton = (Button) button;
+    if (expandableItem.hasBackgroundId()) {
+      int backgroundId = expandableItem.getBackgroundId();
+      button.setBackgroundResource(backgroundId);
+    }
+    if (expandableItem.hasTitle()) {
       String text = expandableItem.getTitle();
-      textButton.setText(text);
+      ((Button) button).setText(text);
+    }
+    if (expandableItem.hasResourceId()) {
+      ImageButton imageButton = (ImageButton) button;
+      int resourceId = expandableItem.getResourceId();
+      imageButton.setImageResource(resourceId);
     }
   }
 
