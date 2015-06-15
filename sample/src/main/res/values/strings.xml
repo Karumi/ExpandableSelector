@@ -17,4 +17,5 @@
 
 <resources>
   <string name="app_name">Expandable Selector</string>
+  <string name="collapse_button_text">Collapse</string>
 </resources>

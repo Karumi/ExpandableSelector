@@ -22,10 +22,11 @@
     android:layout_height="match_parent"
     tools:context=".MainActivityActivity">
 
-  <ImageButton
+  <Button
       android:id="@+id/bt_close"
-      android:layout_width="40dp"
-      android:layout_height="40dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/collapse_button_text"
       android:layout_centerInParent="true"/>
 
   <com.karumi.expandableselector.ExpandableSelector
