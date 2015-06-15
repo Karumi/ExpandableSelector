@@ -101,6 +101,7 @@ public class MainActivity extends ActionBarActivity {
             ExpandableItem fourthItem = sizesExpandableSelector.getExpandableItem(3);
             swipeFirstItem(3, fourthItem);
             break;
+          default:
         }
         sizesExpandableSelector.collapse();
       }
@@ -117,20 +118,20 @@ public class MainActivity extends ActionBarActivity {
     iconsExpandableSelector = (ExpandableSelector) findViewById(R.id.es_icons);
     List<ExpandableItem> expandableItems = new ArrayList<ExpandableItem>();
     ExpandableItem item = new ExpandableItem();
-    item.setResourceId(R.mipmap.ic_keyboard_arrow_up_black_36dp);
+    item.setResourceId(R.mipmap.ic_keyboard_arrow_up_black);
     expandableItems.add(item);
     item = new ExpandableItem();
-    item.setResourceId(R.mipmap.ic_gamepad_black_36dp);
+    item.setResourceId(R.mipmap.ic_gamepad_black);
     expandableItems.add(item);
     item = new ExpandableItem();
-    item.setResourceId(R.mipmap.ic_device_hub_black_36dp);
+    item.setResourceId(R.mipmap.ic_device_hub_black);
     expandableItems.add(item);
     iconsExpandableSelector.showExpandableItems(expandableItems);
     iconsExpandableSelector.setOnExpandableItemClickListener(new OnExpandableItemClickListener() {
       @Override public void onExpandableItemClickListener(int index, View view) {
         if (index == 0 && iconsExpandableSelector.isExpanded()) {
           iconsExpandableSelector.collapse();
-          updateIconsFirstButtonResource(R.mipmap.ic_keyboard_arrow_up_black_36dp);
+          updateIconsFirstButtonResource(R.mipmap.ic_keyboard_arrow_up_black);
         }
         switch (index) {
           case 1:
@@ -139,6 +140,7 @@ public class MainActivity extends ActionBarActivity {
           case 2:
             showToast("Hub icon button clicked.");
             break;
+          default:
         }
       }
     });
@@ -148,7 +150,7 @@ public class MainActivity extends ActionBarActivity {
       }
 
       @Override public void onExpand() {
-        updateIconsFirstButtonResource(R.mipmap.ic_keyboard_arrow_down_black_36dp);
+        updateIconsFirstButtonResource(R.mipmap.ic_keyboard_arrow_down_black);
       }
 
       @Override public void onCollapsed() {
@@ -168,7 +170,7 @@ public class MainActivity extends ActionBarActivity {
         colorsExpandableSelector.collapse();
         sizesExpandableSelector.collapse();
         iconsExpandableSelector.collapse();
-        updateIconsFirstButtonResource(R.mipmap.ic_keyboard_arrow_up_black_36dp);
+        updateIconsFirstButtonResource(R.mipmap.ic_keyboard_arrow_up_black);
       }
     });
     colorsExpandableSelector.setExpandableSelectorListener(new ExpandableSelectorListener() {
@@ -190,9 +192,9 @@ public class MainActivity extends ActionBarActivity {
     });
   }
 
-  private void updateIconsFirstButtonResource(int ic_keyboard_arrow_up_black_36dp) {
+  private void updateIconsFirstButtonResource(int resourceId) {
     ExpandableItem arrowUpExpandableItem = new ExpandableItem();
-    arrowUpExpandableItem.setResourceId(ic_keyboard_arrow_up_black_36dp);
+    arrowUpExpandableItem.setResourceId(resourceId);
     iconsExpandableSelector.updateExpandableItem(0, arrowUpExpandableItem);
   }
 

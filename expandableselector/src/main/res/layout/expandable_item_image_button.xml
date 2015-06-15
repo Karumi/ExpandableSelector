@@ -15,4 +15,7 @@
   ~ limitations under the License.
   -->
 
-<ImageButton style="?expandableItemStyle"/>
+<ImageButton
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="RequiredSize"
+    style="?expandableItemStyle"/>
