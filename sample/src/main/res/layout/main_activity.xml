@@ -37,6 +37,7 @@
       android:layout_alignParentRight="true"
       android:background="@drawable/bg_expandable_selector"
       expandable_selector:hide_background_if_collapsed="true"
+      expandable_selector:hide_first_item_on_collapse="true"
       android:layout_margin="10dp">
 
     <Button

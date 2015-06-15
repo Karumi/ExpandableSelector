@@ -121,6 +121,10 @@ public class ExpandableSelector extends FrameLayout {
     this.clickListener = clickListener;
   }
 
+  public ExpandableItem getExpandableItem(int expandableItemPosition) {
+    return expandableItems.get(expandableItemPosition);
+  }
+
   public void updateExpandableItem(int expandableItemPosition, ExpandableItem expandableItem) {
     validateExpandableItem(expandableItem);
     expandableItems.remove(expandableItemPosition);

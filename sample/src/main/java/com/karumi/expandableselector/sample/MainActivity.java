@@ -118,18 +118,26 @@ public class MainActivity extends Activity {
     sizesExpandableSelector.setOnExpandableItemClickListener(new OnExpandableItemClickListener() {
       @Override public void onExpandableItemClickListener(int index, View view) {
         switch (index) {
-          case 0:
-            showToast("XL button clicked");
-            break;
           case 1:
-            showToast("L button clicked");
+            ExpandableItem firstItem = sizesExpandableSelector.getExpandableItem(1);
+            swipeFirstItem(1, firstItem);
             break;
           case 2:
-            showToast("M button clicked");
+            ExpandableItem secondItem = sizesExpandableSelector.getExpandableItem(2);
+            swipeFirstItem(2, secondItem);
             break;
-          default:
-            showToast("S button clicked");
+          case 3:
+            ExpandableItem fourthItem = sizesExpandableSelector.getExpandableItem(3);
+            swipeFirstItem(3, fourthItem);
+            break;
         }
+        sizesExpandableSelector.collapse();
+      }
+
+      private void swipeFirstItem(int position, ExpandableItem clickedItem) {
+        ExpandableItem firstItem = sizesExpandableSelector.getExpandableItem(0);
+        sizesExpandableSelector.updateExpandableItem(0, clickedItem);
+        sizesExpandableSelector.updateExpandableItem(position, firstItem);
       }
     });
   }
