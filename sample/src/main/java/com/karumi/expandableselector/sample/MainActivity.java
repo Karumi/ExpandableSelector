@@ -29,6 +29,7 @@ public class MainActivity extends Activity {
 
   private View colorsHeaderButton;
   private ExpandableSelector colorsExpandableSelector;
+  private ExpandableSelector sizesExpandableSelector;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -43,6 +44,7 @@ public class MainActivity extends Activity {
     closeButton.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
         colorsExpandableSelector.collapse();
+        sizesExpandableSelector.collapse();
       }
     });
     colorsExpandableSelector.setExpandableSelectorListener(new ExpandableSelectorListener() {
@@ -71,7 +73,7 @@ public class MainActivity extends Activity {
     expandableItems.add(new ExpandableItem(R.drawable.item_green));
     expandableItems.add(new ExpandableItem(R.drawable.item_orange));
     expandableItems.add(new ExpandableItem(R.drawable.item_pink));
-    colorsExpandableSelector.setExpandableItems(expandableItems);
+    colorsExpandableSelector.showExpandableItems(expandableItems);
     colorsHeaderButton = findViewById(R.id.bt_colors);
     colorsHeaderButton.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
@@ -82,12 +84,12 @@ public class MainActivity extends Activity {
   }
 
   private void initializeSizesExpandableSelector() {
-    ExpandableSelector expandableSelector = (ExpandableSelector) findViewById(R.id.es_sizes);
+    sizesExpandableSelector = (ExpandableSelector) findViewById(R.id.es_sizes);
     List<ExpandableItem> expandableItems = new ArrayList<ExpandableItem>();
     expandableItems.add(new ExpandableItem("XL"));
     expandableItems.add(new ExpandableItem("L"));
     expandableItems.add(new ExpandableItem("M"));
     expandableItems.add(new ExpandableItem("S"));
-    expandableSelector.setExpandableItems(expandableItems);
+    sizesExpandableSelector.showExpandableItems(expandableItems);
   }
 }

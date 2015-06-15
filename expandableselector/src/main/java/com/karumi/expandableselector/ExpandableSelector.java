@@ -54,7 +54,9 @@ public class ExpandableSelector extends FrameLayout {
   private boolean hideBackgroundIfCollapsed;
   private boolean isCollapsed = true;
   private Drawable expandedBackground;
+
   private ExpandableSelectorListener listener;
+  private OnExpandableItemClickListener clickListener;
 
   public ExpandableSelector(Context context) {
     this(context, null);
@@ -82,21 +84,12 @@ public class ExpandableSelector extends FrameLayout {
    * based on the size of the list passed as parameter. Don't use this library as a RecyclerView
    * and take into account the number of elements to show.
    */
-  public void setExpandableItems(List<ExpandableItem> expandableItems) {
+  public void showExpandableItems(List<ExpandableItem> expandableItems) {
     validateExpandableItems(expandableItems);
     this.expandableItems = expandableItems;
     renderExpandableItems();
+    hookListeners();
     bringChildrensToFront(expandableItems);
-  }
-
-  private void bringChildrensToFront(List<ExpandableItem> expandableItems) {
-    int childCount = getChildCount();
-    int numberOfExpandableItems = expandableItems.size();
-    if (childCount > numberOfExpandableItems) {
-      for (int i = 0; i < childCount - numberOfExpandableItems; i++) {
-        getChildAt(i).bringToFront();
-      }
-    }
   }
 
   public void expand() {
@@ -141,6 +134,10 @@ public class ExpandableSelector extends FrameLayout {
     this.listener = listener;
   }
 
+  public void setOnExpandableItemClickListener(OnExpandableItemClickListener clickListener) {
+    this.clickListener = clickListener;
+  }
+
   private void initializeView(AttributeSet attrs) {
     TypedArray attributes =
         getContext().obtainStyledAttributes(attrs, R.styleable.expandable_selector);
@@ -177,6 +174,36 @@ public class ExpandableSelector extends FrameLayout {
     }
   }
 
+  private void hookListeners() {
+    int numberOfButtons = buttons.size();
+    boolean thereAreMoreThanOneButton = numberOfButtons > 1;
+    if (thereAreMoreThanOneButton) {
+      buttons.get(numberOfButtons - 1).setOnClickListener(new OnClickListener() {
+        @Override public void onClick(View v) {
+          if (isCollapsed()) {
+            expand();
+          } else {
+            notifyButtonClicked(0, v);
+          }
+        }
+      });
+    }
+    for (int i = 0; i < numberOfButtons - 1; i++) {
+      final int buttonPosition = i;
+      buttons.get(i).setOnClickListener(new OnClickListener() {
+        @Override public void onClick(View v) {
+          notifyButtonClicked(buttonPosition, v);
+        }
+      });
+    }
+  }
+
+  private void notifyButtonClicked(int itemPosition, View button) {
+    if (clickListener != null) {
+      clickListener.onExpandableItemClickListener(itemPosition, button);
+    }
+  }
+
   private View initializeButton(int expandableItemPosition) {
     ExpandableItem expandableItem = expandableItems.get(expandableItemPosition);
     View button = null;
@@ -193,7 +220,6 @@ public class ExpandableSelector extends FrameLayout {
   }
 
   private void configureButton(View button, ExpandableItem expandableItem) {
-    button.setClickable(false);
     if (expandableItem.hasDrawableId()) {
       ImageButton imageButton = (ImageButton) button;
       int drawableId = expandableItem.getDrawableId();
@@ -246,6 +272,16 @@ public class ExpandableSelector extends FrameLayout {
       }
     });
     startAnimation(resizeAnimation);
+  }
+
+  private void bringChildrensToFront(List<ExpandableItem> expandableItems) {
+    int childCount = getChildCount();
+    int numberOfExpandableItems = expandableItems.size();
+    if (childCount > numberOfExpandableItems) {
+      for (int i = 0; i < childCount - numberOfExpandableItems; i++) {
+        getChildAt(i).bringToFront();
+      }
+    }
   }
 
   private TimeInterpolator getExpandAnimatorInterpolation() {
