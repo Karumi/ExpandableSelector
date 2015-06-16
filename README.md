@@ -1,4 +1,4 @@
-ExpandableSelector
+ExpandableSelector [![Build Status](https://travis-ci.org/Karumi/ExpandableSelector.svg?branch=master)](https://travis-ci.org/Karumi/ExpandableSelector)
 ==================
 
 ExpandableSelector is an Android library created to show a list of Button/ImageButton widgets inside a animated container which can be collapsed or expanded.
