@@ -239,8 +239,8 @@ public class ExpandableSelector extends FrameLayout {
 
   private void hookListeners() {
     final int numberOfButtons = buttons.size();
-    boolean thereAreMoreThanOneButton = numberOfButtons > 1;
-    if (thereAreMoreThanOneButton) {
+    boolean thereIsMoreThanOneButton = numberOfButtons > 1;
+    if (thereIsMoreThanOneButton) {
       buttons.get(numberOfButtons - 1).setOnClickListener(new OnClickListener() {
         @Override public void onClick(View v) {
           if (isCollapsed()) {
@@ -255,7 +255,8 @@ public class ExpandableSelector extends FrameLayout {
       final int buttonPosition = i;
       buttons.get(i).setOnClickListener(new OnClickListener() {
         @Override public void onClick(View v) {
-          notifyButtonClicked(numberOfButtons - 1 - buttonPosition, v);
+          int buttonIndex = numberOfButtons - 1 - buttonPosition;
+          notifyButtonClicked(buttonIndex, v);
         }
       });
     }
