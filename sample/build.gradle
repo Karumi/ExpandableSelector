@@ -1,0 +1,17 @@
+apply plugin: 'com.android.application'
+
+android {
+  compileSdkVersion 22
+  buildToolsVersion "22.0.1"
+
+  defaultConfig {
+    applicationId "com.karumi.expandableselector"
+    minSdkVersion 14
+    targetSdkVersion 22
+  }
+}
+
+dependencies {
+  compile project(':expandableselector')
+  compile 'com.android.support:appcompat-v7:22.1.1'
+}
