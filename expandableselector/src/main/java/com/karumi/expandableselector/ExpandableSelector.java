@@ -196,7 +196,17 @@ public class ExpandableSelector extends FrameLayout {
     int animationDuration =
         attributes.getInteger(R.styleable.expandable_selector_animation_duration,
             DEFAULT_ANIMATION_DURATION);
-    expandableSelectorAnimator = new ExpandableSelectorAnimator(this, animationDuration);
+    int expandInterpolatorId =
+            attributes.getResourceId(R.styleable.expandable_selector_expand_interpolator,
+                    android.R.anim.accelerate_interpolator);
+    int collapseInterpolatorId =
+            attributes.getResourceId(R.styleable.expandable_selector_collapse_interpolator,
+                    android.R.anim.decelerate_interpolator);
+    int containerInterpolatorId =
+            attributes.getResourceId(R.styleable.expandable_selector_container_interpolator,
+                    android.R.anim.decelerate_interpolator);
+    expandableSelectorAnimator = new ExpandableSelectorAnimator(this, animationDuration, expandInterpolatorId,
+            collapseInterpolatorId, containerInterpolatorId);
   }
 
   private void initializeHideFirstItemOnCollapse(TypedArray attributes) {
