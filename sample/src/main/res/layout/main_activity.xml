@@ -49,7 +49,10 @@
       android:layout_centerHorizontal="true"
       android:layout_margin="@dimen/expandable_selector_margin"
       android:background="@drawable/bg_expandable_selector_dark"
-      expandable_selector:animation_duration="@integer/custom_animation_duration"/>
+      expandable_selector:expand_interpolator="@android:anim/accelerate_interpolator"
+      expandable_selector:container_interpolator="@android:anim/accelerate_decelerate_interpolator"
+      expandable_selector:collapse_interpolator="@android:anim/decelerate_interpolator"
+      expandable_selector:animation_duration="@integer/slow_custom_animation_duration"/>
 
   <!-- COLORS EXPANDABLE SELECTOR -->
 

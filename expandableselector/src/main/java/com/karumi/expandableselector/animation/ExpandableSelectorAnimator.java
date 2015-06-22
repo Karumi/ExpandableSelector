@@ -16,19 +16,19 @@
 
 package com.karumi.expandableselector.animation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.view.Gravity;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Performs all the animations and size or position changes related to the
@@ -42,14 +42,21 @@ public class ExpandableSelectorAnimator {
 
   private final View container;
   private final int animationDuration;
+  private final int expandInterpolatorId;
+  private final int collapseInterpolatorId;
+  private final int containerInterpolatorId;
 
   private List<View> buttons;
   private boolean isCollapsed = true;
   private boolean hideFirstItemOnCollapse;
 
-  public ExpandableSelectorAnimator(View container, int animationDuration) {
+  public ExpandableSelectorAnimator(View container, int animationDuration, int expandInterpolatorId, int
+          collapseInterpolatorId, int containerInterpolatorId) {
     this.container = container;
     this.animationDuration = animationDuration;
+    this.expandInterpolatorId = expandInterpolatorId;
+    this.collapseInterpolatorId = collapseInterpolatorId;
+    this.containerInterpolatorId = containerInterpolatorId;
   }
 
   /**
@@ -221,15 +228,15 @@ public class ExpandableSelectorAnimator {
   }
 
   private TimeInterpolator getExpandAnimatorInterpolation() {
-    return new AccelerateInterpolator();
+    return AnimationUtils.loadInterpolator(container.getContext(), expandInterpolatorId);
   }
 
   private TimeInterpolator getCollapseAnimatorInterpolation() {
-    return new DecelerateInterpolator();
+    return AnimationUtils.loadInterpolator(container.getContext(), collapseInterpolatorId);
   }
 
   private Interpolator getContainerAnimationInterpolator() {
-    return new DecelerateInterpolator();
+    return AnimationUtils.loadInterpolator(container.getContext(), containerInterpolatorId);
   }
 
   private int getSumHeight() {
