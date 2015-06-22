@@ -16,5 +16,6 @@
   -->
 
 <resources>
-<integer name="custom_animation_duration">100</integer>
+  <integer name="slow_custom_animation_duration">500</integer>
+  <integer name="custom_animation_duration">100</integer>
 </resources>
