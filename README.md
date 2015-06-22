@@ -121,6 +121,9 @@ Some extra configuration parameters can be provided from the XML like styleable 
       android:layout_height="wrap_content"
       expandable_selector:hide_background_if_collapsed="true"
       expandable_selector:hide_first_item_on_collapse="true"
+      expandable_selector:expand_interpolator="@android:anim/accelerate_interpolator"
+      expandable_selector:collapse_interpolator="@android:anim/decelerate_interpolator"
+      expandable_selector:container_interpolator="@android:anim/accelerate_decelerate_interpolator"
       expandable_selector:animation_duration="100">
 
 ```
@@ -129,6 +132,9 @@ The attributes you can configure are:
 
 * expandable_selector:hide_background_if_collapsed: Changes the background associated to the ``ExpandableSelector`` widget to a transparent one while the widget is collapsed.
 * expandable_selector:hide_first_item_on_collapse: Changes the first item visibility to View.INVISIBLE when the ``ExpandableSelector`` is collapsed.
+* expandable_selector:expand_interpolator: Changes the interpolator used in the expand animation (applies to the items), you can use an interpolator available in the platform, or create your own.
+* expandable_selector:collapse_interpolator: Changes the interpolator used in the collapse animation (applies to the items).
+* expandable_selector:container_interpolator: Changes the interpolator used in the expand & collapse animation (applies to the container)
 * expandable_selector:animation_duration: Changes the animation duration in milliseconds to the one indicated.
 
 Add it to your project
