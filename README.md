@@ -117,6 +117,7 @@ Some extra configuration parameters can be provided from the XML like styleable 
 ```xml
 
   <com.karumi.expandableselector.ExpandableSelector
+      xmlns:expandable_selector="http://schemas.android.com/apk/res-auto"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       expandable_selector:hide_background_if_collapsed="true"
