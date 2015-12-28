@@ -1,4 +1,4 @@
-ExpandableSelector [![Build Status](https://travis-ci.org/Karumi/ExpandableSelector.svg?branch=master)](https://travis-ci.org/Karumi/ExpandableSelector) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.karumi/expandableselector/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.karumi/expandableselector) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-ExpandableSelector-green.svg?style=flat)](https://android-arsenal.com/details/1/1987)
+![Karumi logo][karumilogo] ExpandableSelector [![Build Status](https://travis-ci.org/Karumi/ExpandableSelector.svg?branch=master)](https://travis-ci.org/Karumi/ExpandableSelector) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.karumi/expandableselector/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.karumi/expandableselector) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-ExpandableSelector-green.svg?style=flat)](https://android-arsenal.com/details/1/1987)
 ==================
 
 ExpandableSelector is an Android library created to show a list of Button/ImageButton widgets inside a animated container which can be collapsed or expanded.
@@ -188,4 +188,4 @@ License
 
 
 [1]: ./art/screenshot_demo_1.gif
-
+[karumilogo]: https://cloud.githubusercontent.com/assets/858090/11626547/e5a1dc66-9ce3-11e5-908d-537e07e82090.png
