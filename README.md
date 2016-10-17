@@ -104,6 +104,8 @@ You can easily customize the appearance of your ``ExpandableItem`` instances. Ju
 
 ```
 
+***Remember that declaring a ``ExpandableItemStyle`` as described before with the layout height and width is mandatory to avoid inflation errors.***
+
 The resources you can show in the Button/ImageButton widgets automatically added to ``ExpandableSelector`` are:
 
 * Background resource identifier configured as Button/ImageButton background.
